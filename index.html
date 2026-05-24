@@ -1,0 +1,2250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>sharklocal API documentation</title>
+<meta name="description" content="sharklocal — Local control library for Shark robot vacuums …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>sharklocal</code></h1>
+</header>
+<section id="section-intro">
+<p>sharklocal — Local control library for Shark robot vacuums.</p>
+<p>Designed for use with Home Assistant integrations. Supports both REST and MQTT
+transports with YAML-configurable action mappings per vacuum model.</p>
+<p>Basic usage::</p>
+<pre><code>from sharklocal import VacuumClient
+
+async with VacuumClient(
+    "192.168.1.100",
+    rest_mapping="sharkiq_v1",
+    mqtt_mapping="sharkiq_v1",
+) as vacuum:
+    status = await vacuum.get_status()
+    print(status.mode, status.battery_level)
+    await vacuum.start_cleaning()
+</code></pre>
+<p>Direct transport access::</p>
+<pre><code>from sharklocal import RESTVacuumClient, load_rest_mapping
+
+mapping = load_rest_mapping("sharkiq_v1")
+client = RESTVacuumClient("192.168.1.100", mapping)
+status = await client.call("get_status")
+await client.close()
+</code></pre>
+</section>
+<section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="sharklocal.client" href="client.html">sharklocal.client</a></code></dt>
+<dd>
+<div class="desc"><p>Unified VacuumClient with automatic transport selection.</p></div>
+</dd>
+<dt><code class="name"><a title="sharklocal.exceptions" href="exceptions.html">sharklocal.exceptions</a></code></dt>
+<dd>
+<div class="desc"><p>Custom exceptions for the sharklocal library.</p></div>
+</dd>
+<dt><code class="name"><a title="sharklocal.mappings" href="mappings/index.html">sharklocal.mappings</a></code></dt>
+<dd>
+<div class="desc"><p>Mapping loader utilities for REST and MQTT transport configurations.</p></div>
+</dd>
+<dt><code class="name"><a title="sharklocal.models" href="models.html">sharklocal.models</a></code></dt>
+<dd>
+<div class="desc"><p>Data models for vacuum state and device information.</p></div>
+</dd>
+<dt><code class="name"><a title="sharklocal.mqtt_client" href="mqtt_client.html">sharklocal.mqtt_client</a></code></dt>
+<dd>
+<div class="desc"><p>Async MQTT client for local vacuum control.</p></div>
+</dd>
+<dt><code class="name"><a title="sharklocal.protobuf" href="protobuf.html">sharklocal.protobuf</a></code></dt>
+<dd>
+<div class="desc"><p>Pure-Python protobuf decoder for SharkIQ MQTT messages …</p></div>
+</dd>
+<dt><code class="name"><a title="sharklocal.rest_client" href="rest_client.html">sharklocal.rest_client</a></code></dt>
+<dd>
+<div class="desc"><p>Async REST client for local vacuum control.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="sharklocal.list_mqtt_mappings"><code class="name flex">
+<span>def <span class="ident">list_mqtt_mappings</span></span>(<span>search_paths: Optional[List[Union[str, Path]]] = None) ‑> List[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_mqtt_mappings(
+    search_paths: Optional[List[Union[str, Path]]] = None,
+) -&gt; List[str]:
+    &#34;&#34;&#34;Return names of all available MQTT mappings.&#34;&#34;&#34;
+    names: set[str] = set()
+    for directory in [_BUILTIN_MQTT_DIR, *[Path(p) for p in (search_paths or [])]]:
+        if directory.is_dir():
+            names.update(p.stem for p in directory.glob(&#34;*.yaml&#34;))
+    return sorted(names)</code></pre>
+</details>
+<div class="desc"><p>Return names of all available MQTT mappings.</p></div>
+</dd>
+<dt id="sharklocal.list_rest_mappings"><code class="name flex">
+<span>def <span class="ident">list_rest_mappings</span></span>(<span>search_paths: Optional[List[Union[str, Path]]] = None) ‑> List[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_rest_mappings(
+    search_paths: Optional[List[Union[str, Path]]] = None,
+) -&gt; List[str]:
+    &#34;&#34;&#34;Return names of all available REST mappings.&#34;&#34;&#34;
+    names: set[str] = set()
+    for directory in [_BUILTIN_REST_DIR, *[Path(p) for p in (search_paths or [])]]:
+        if directory.is_dir():
+            names.update(p.stem for p in directory.glob(&#34;*.yaml&#34;))
+    return sorted(names)</code></pre>
+</details>
+<div class="desc"><p>Return names of all available REST mappings.</p></div>
+</dd>
+<dt id="sharklocal.load_mqtt_mapping"><code class="name flex">
+<span>def <span class="ident">load_mqtt_mapping</span></span>(<span>name: str, search_paths: Optional[List[Union[str, Path]]] = None) ‑> <a title="sharklocal.mappings.base.MQTTMappingConfig" href="mappings/base.html#sharklocal.mappings.base.MQTTMappingConfig">MQTTMappingConfig</a></span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_mqtt_mapping(
+    name: str,
+    search_paths: Optional[List[Union[str, Path]]] = None,
+) -&gt; MQTTMappingConfig:
+    &#34;&#34;&#34;Load an MQTT mapping by name.
+
+    Searches the built-in mappings directory first, then any additional
+    paths provided in *search_paths*.
+
+    Args:
+        name: Mapping filename stem (e.g. ``&#34;sharkiq_v1&#34;``).
+        search_paths: Optional list of additional directories to search.
+
+    Raises:
+        MappingNotFoundError: If no matching YAML file is found.
+    &#34;&#34;&#34;
+    for directory in [_BUILTIN_MQTT_DIR, *[Path(p) for p in (search_paths or [])]]:
+        candidate = directory / f&#34;{name}.yaml&#34;
+        if candidate.is_file():
+            with open(candidate) as f:
+                data = yaml.safe_load(f)
+            return MQTTMappingConfig.from_dict(data)
+    raise MappingNotFoundError(
+        f&#34;MQTT mapping &#39;{name}&#39; not found. &#34;
+        f&#34;Available built-in mappings: {list_mqtt_mappings()}&#34;
+    )</code></pre>
+</details>
+<div class="desc"><p>Load an MQTT mapping by name.</p>
+<p>Searches the built-in mappings directory first, then any additional
+paths provided in <em>search_paths</em>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong></dt>
+<dd>Mapping filename stem (e.g. <code>"sharkiq_v1"</code>).</dd>
+<dt><strong><code>search_paths</code></strong></dt>
+<dd>Optional list of additional directories to search.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="sharklocal.MappingNotFoundError" href="#sharklocal.MappingNotFoundError">MappingNotFoundError</a></code></dt>
+<dd>If no matching YAML file is found.</dd>
+</dl></div>
+</dd>
+<dt id="sharklocal.load_rest_mapping"><code class="name flex">
+<span>def <span class="ident">load_rest_mapping</span></span>(<span>name: str, search_paths: Optional[List[Union[str, Path]]] = None) ‑> <a title="sharklocal.mappings.base.RESTMappingConfig" href="mappings/base.html#sharklocal.mappings.base.RESTMappingConfig">RESTMappingConfig</a></span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_rest_mapping(
+    name: str,
+    search_paths: Optional[List[Union[str, Path]]] = None,
+) -&gt; RESTMappingConfig:
+    &#34;&#34;&#34;Load a REST mapping by name.
+
+    Searches the built-in mappings directory first, then any additional
+    paths provided in *search_paths*.
+
+    Args:
+        name: Mapping filename stem (e.g. ``&#34;sharkiq_v1&#34;``).
+        search_paths: Optional list of additional directories to search.
+
+    Raises:
+        MappingNotFoundError: If no matching YAML file is found.
+    &#34;&#34;&#34;
+    for directory in [_BUILTIN_REST_DIR, *[Path(p) for p in (search_paths or [])]]:
+        candidate = directory / f&#34;{name}.yaml&#34;
+        if candidate.is_file():
+            with open(candidate) as f:
+                data = yaml.safe_load(f)
+            return RESTMappingConfig.from_dict(data)
+    raise MappingNotFoundError(
+        f&#34;REST mapping &#39;{name}&#39; not found. &#34;
+        f&#34;Available built-in mappings: {list_rest_mappings()}&#34;
+    )</code></pre>
+</details>
+<div class="desc"><p>Load a REST mapping by name.</p>
+<p>Searches the built-in mappings directory first, then any additional
+paths provided in <em>search_paths</em>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong></dt>
+<dd>Mapping filename stem (e.g. <code>"sharkiq_v1"</code>).</dd>
+<dt><strong><code>search_paths</code></strong></dt>
+<dd>Optional list of additional directories to search.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="sharklocal.MappingNotFoundError" href="#sharklocal.MappingNotFoundError">MappingNotFoundError</a></code></dt>
+<dd>If no matching YAML file is found.</dd>
+</dl></div>
+</dd>
+<dt id="sharklocal.register_decoder"><code class="name flex">
+<span>def <span class="ident">register_decoder</span></span>(<span>name: str) ‑> Callable</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_decoder(name: str) -&gt; Callable:
+    &#34;&#34;&#34;Decorator to register a named MQTT status decoder function.
+
+    Usage::
+
+        @register_decoder(&#34;my_model_v1&#34;)
+        def _decode_my_model(payload: bytes, modes: Dict[int, str]) -&gt; VacuumStatus:
+            ...
+    &#34;&#34;&#34;
+
+    def decorator(fn: Callable) -&gt; Callable:
+        _STATUS_DECODERS[name] = fn
+        return fn
+
+    return decorator</code></pre>
+</details>
+<div class="desc"><p>Decorator to register a named MQTT status decoder function.</p>
+<p>Usage::</p>
+<pre><code>@register_decoder("my_model_v1")
+def _decode_my_model(payload: bytes, modes: Dict[int, str]) -&gt; VacuumStatus:
+    ...
+</code></pre></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="sharklocal.ActionNotSupportedError"><code class="flex name class">
+<span>class <span class="ident">ActionNotSupportedError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ActionNotSupportedError(SharklocalError):
+    &#34;&#34;&#34;Raised when an action is not defined in the configured transport mapping.&#34;&#34;&#34;</code></pre>
+</details>
+<div class="desc"><p>Raised when an action is not defined in the configured transport mapping.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="sharklocal.exceptions.SharklocalError" href="exceptions.html#sharklocal.exceptions.SharklocalError">SharklocalError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="sharklocal.CommandError"><code class="flex name class">
+<span>class <span class="ident">CommandError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CommandError(SharklocalError):
+    &#34;&#34;&#34;Raised when a command fails to execute or receives an error response.&#34;&#34;&#34;</code></pre>
+</details>
+<div class="desc"><p>Raised when a command fails to execute or receives an error response.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="sharklocal.exceptions.SharklocalError" href="exceptions.html#sharklocal.exceptions.SharklocalError">SharklocalError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="sharklocal.ConnectError"><code class="flex name class">
+<span>class <span class="ident">ConnectError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ConnectError(SharklocalError):
+    &#34;&#34;&#34;Raised when a connection to the vacuum cannot be established.&#34;&#34;&#34;</code></pre>
+</details>
+<div class="desc"><p>Raised when a connection to the vacuum cannot be established.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="sharklocal.exceptions.SharklocalError" href="exceptions.html#sharklocal.exceptions.SharklocalError">SharklocalError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="sharklocal.DecoderError"><code class="flex name class">
+<span>class <span class="ident">DecoderError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DecoderError(SharklocalError):
+    &#34;&#34;&#34;Raised when a response payload cannot be decoded.&#34;&#34;&#34;</code></pre>
+</details>
+<div class="desc"><p>Raised when a response payload cannot be decoded.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="sharklocal.exceptions.SharklocalError" href="exceptions.html#sharklocal.exceptions.SharklocalError">SharklocalError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="sharklocal.DeviceInfo"><code class="flex name class">
+<span>class <span class="ident">DeviceInfo</span></span>
+<span>(</span><span>firmware: Optional[str] = None,<br>mac_address: Optional[str] = None,<br>ip_address: Optional[str] = None,<br>ssid: Optional[str] = None,<br>rssi: Optional[int] = None,<br>raw: Dict[str, Any] = &lt;factory&gt;)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DeviceInfo:
+    &#34;&#34;&#34;Device identity and connectivity information.&#34;&#34;&#34;
+
+    firmware: Optional[str] = None
+    mac_address: Optional[str] = None
+    ip_address: Optional[str] = None
+    ssid: Optional[str] = None
+    rssi: Optional[int] = None
+    raw: Dict[str, Any] = field(default_factory=dict)</code></pre>
+</details>
+<div class="desc"><p>Device identity and connectivity information.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.DeviceInfo.firmware"><code class="name">var <span class="ident">firmware</span> : str | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.DeviceInfo.ip_address"><code class="name">var <span class="ident">ip_address</span> : str | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.DeviceInfo.mac_address"><code class="name">var <span class="ident">mac_address</span> : str | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.DeviceInfo.raw"><code class="name">var <span class="ident">raw</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.DeviceInfo.rssi"><code class="name">var <span class="ident">rssi</span> : int | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.DeviceInfo.ssid"><code class="name">var <span class="ident">ssid</span> : str | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.MQTTVacuumClient"><code class="flex name class">
+<span>class <span class="ident">MQTTVacuumClient</span></span>
+<span>(</span><span>host: str, mapping: MQTTMappingConfig)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MQTTVacuumClient:
+    &#34;&#34;&#34;Async MQTT client for local vacuum control.
+
+    Requires ``aiomqtt`` (``pip install aiomqtt``).
+    &#34;&#34;&#34;
+
+    def __init__(self, host: str, mapping: MQTTMappingConfig) -&gt; None:
+        self.host = host
+        self.mapping = mapping
+
+    def supports(self, action: str) -&gt; bool:
+        &#34;&#34;&#34;Return ``True`` if the mapping defines *action*.&#34;&#34;&#34;
+        return action in self.mapping.actions
+
+    def _decode_incoming(self, raw_payload: bytes) -&gt; bytes:
+        &#34;&#34;&#34;Decode a received MQTT payload per the mapping&#39;s encoding setting.&#34;&#34;&#34;
+        if self.mapping.encoding == &#34;base64&#34;:
+            return base64.b64decode(raw_payload)
+        return raw_payload
+
+    def _decode_status(self, raw_payload: bytes) -&gt; VacuumStatus:
+        &#34;&#34;&#34;Decode a raw MQTT payload into a normalized ``VacuumStatus``.&#34;&#34;&#34;
+        decoder = _STATUS_DECODERS.get(self.mapping.status_decoder)
+        if decoder is None:
+            raise DecoderError(
+                f&#34;No decoder registered for &#39;{self.mapping.status_decoder}&#39;. &#34;
+                f&#34;Available decoders: {list(_STATUS_DECODERS)}&#34;
+            )
+        payload = self._decode_incoming(raw_payload)
+        return decoder(payload, self.mapping.modes)
+
+    async def call(self, action: str) -&gt; Any:
+        &#34;&#34;&#34;Execute a named action from the mapping.
+
+        Args:
+            action: Action name as defined in the mapping (e.g. ``&#34;start_cleaning&#34;``).
+
+        Returns:
+            ``True`` for ``command`` actions, or a ``VacuumStatus`` for
+            ``status_request`` actions.
+
+        Raises:
+            ActionNotSupportedError: If *action* is not in the mapping.
+            ConnectError: If the MQTT broker cannot be reached.
+            CommandError: If a status response is not received within the timeout.
+        &#34;&#34;&#34;
+        if not self.supports(action):
+            raise ActionNotSupportedError(
+                f&#34;MQTT mapping &#39;{self.mapping.id}&#39; does not support &#39;{action}&#39;&#34;
+            )
+
+        spec = self.mapping.actions[action]
+
+        try:
+            import aiomqtt
+        except ImportError as exc:
+            raise ConnectError(
+                &#34;aiomqtt is required for MQTT support. &#34;
+                &#34;Install with: pip install aiomqtt&#34;
+            ) from exc
+
+        try:
+            if spec.type == &#34;command&#34;:
+                async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+                    await client.publish(self.mapping.command_topic, payload=spec.payload)
+                return True
+
+            if spec.type == &#34;status_request&#34;:
+                return await self._request_status(spec.payload, spec.timeout)
+
+        except (ActionNotSupportedError, CommandError, ConnectError, DecoderError):
+            raise
+        except Exception as exc:
+            raise ConnectError(
+                f&#34;MQTT error connecting to {self.host}:{self.mapping.port}: {exc}&#34;
+            ) from exc
+
+        raise CommandError(f&#34;Unrecognised MQTT action type &#39;{spec.type}&#39;&#34;)
+
+    async def _request_status(self, command_payload: str, timeout: float) -&gt; VacuumStatus:
+        &#34;&#34;&#34;Publish a status-request command and return the decoded first response.&#34;&#34;&#34;
+        try:
+            import aiomqtt
+        except ImportError as exc:
+            raise ConnectError(&#34;aiomqtt is required for MQTT support&#34;) from exc
+
+        async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+            await client.subscribe(self.mapping.status_topic)
+            await client.publish(self.mapping.command_topic, payload=command_payload)
+            try:
+                async with asyncio.timeout(timeout):
+                    async for message in client.messages:
+                        return self._decode_status(bytes(message.payload))
+            except TimeoutError:
+                raise CommandError(
+                    f&#34;Timed out after {timeout}s waiting for MQTT status response&#34;
+                )
+
+        raise CommandError(&#34;No status message received from vacuum&#34;)
+
+    async def monitor(
+        self,
+        callback: Callable[[VacuumStatus], None],
+        *,
+        stop_event: Optional[asyncio.Event] = None,
+    ) -&gt; None:
+        &#34;&#34;&#34;Subscribe to the vacuum&#39;s status topic and invoke *callback* per update.
+
+        Runs indefinitely until *stop_event* is set or the task is cancelled.
+        Both synchronous and ``async`` callbacks are supported.
+
+        Args:
+            callback: Called with each decoded ``VacuumStatus``.
+            stop_event: Optional ``asyncio.Event``; when set, monitoring stops
+                cleanly after the current message.
+        &#34;&#34;&#34;
+        try:
+            import aiomqtt
+        except ImportError as exc:
+            raise ConnectError(&#34;aiomqtt is required for MQTT support&#34;) from exc
+
+        try:
+            async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+                await client.subscribe(self.mapping.status_topic)
+                async for message in client.messages:
+                    if stop_event and stop_event.is_set():
+                        return
+                    try:
+                        status = self._decode_status(bytes(message.payload))
+                    except (DecoderError, CommandError):
+                        continue  # Skip malformed messages silently
+                    if asyncio.iscoroutinefunction(callback):
+                        await callback(status)
+                    else:
+                        callback(status)
+
+        except (ActionNotSupportedError, CommandError, ConnectError, DecoderError):
+            raise
+        except Exception as exc:
+            raise ConnectError(
+                f&#34;MQTT monitor lost connection to {self.host}: {exc}&#34;
+            ) from exc</code></pre>
+</details>
+<div class="desc"><p>Async MQTT client for local vacuum control.</p>
+<p>Requires <code>aiomqtt</code> (<code>pip install aiomqtt</code>).</p></div>
+<h3>Methods</h3>
+<dl>
+<dt id="sharklocal.MQTTVacuumClient.call"><code class="name flex">
+<span>async def <span class="ident">call</span></span>(<span>self, action: str) ‑> Any</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def call(self, action: str) -&gt; Any:
+    &#34;&#34;&#34;Execute a named action from the mapping.
+
+    Args:
+        action: Action name as defined in the mapping (e.g. ``&#34;start_cleaning&#34;``).
+
+    Returns:
+        ``True`` for ``command`` actions, or a ``VacuumStatus`` for
+        ``status_request`` actions.
+
+    Raises:
+        ActionNotSupportedError: If *action* is not in the mapping.
+        ConnectError: If the MQTT broker cannot be reached.
+        CommandError: If a status response is not received within the timeout.
+    &#34;&#34;&#34;
+    if not self.supports(action):
+        raise ActionNotSupportedError(
+            f&#34;MQTT mapping &#39;{self.mapping.id}&#39; does not support &#39;{action}&#39;&#34;
+        )
+
+    spec = self.mapping.actions[action]
+
+    try:
+        import aiomqtt
+    except ImportError as exc:
+        raise ConnectError(
+            &#34;aiomqtt is required for MQTT support. &#34;
+            &#34;Install with: pip install aiomqtt&#34;
+        ) from exc
+
+    try:
+        if spec.type == &#34;command&#34;:
+            async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+                await client.publish(self.mapping.command_topic, payload=spec.payload)
+            return True
+
+        if spec.type == &#34;status_request&#34;:
+            return await self._request_status(spec.payload, spec.timeout)
+
+    except (ActionNotSupportedError, CommandError, ConnectError, DecoderError):
+        raise
+    except Exception as exc:
+        raise ConnectError(
+            f&#34;MQTT error connecting to {self.host}:{self.mapping.port}: {exc}&#34;
+        ) from exc
+
+    raise CommandError(f&#34;Unrecognised MQTT action type &#39;{spec.type}&#39;&#34;)</code></pre>
+</details>
+<div class="desc"><p>Execute a named action from the mapping.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>action</code></strong></dt>
+<dd>Action name as defined in the mapping (e.g. <code>"start_cleaning"</code>).</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>True</code> for <code>command</code> actions, or a <code><a title="sharklocal.VacuumStatus" href="#sharklocal.VacuumStatus">VacuumStatus</a></code> for
+<code>status_request</code> actions.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="sharklocal.ActionNotSupportedError" href="#sharklocal.ActionNotSupportedError">ActionNotSupportedError</a></code></dt>
+<dd>If <em>action</em> is not in the mapping.</dd>
+<dt><code><a title="sharklocal.ConnectError" href="#sharklocal.ConnectError">ConnectError</a></code></dt>
+<dd>If the MQTT broker cannot be reached.</dd>
+<dt><code><a title="sharklocal.CommandError" href="#sharklocal.CommandError">CommandError</a></code></dt>
+<dd>If a status response is not received within the timeout.</dd>
+</dl></div>
+</dd>
+<dt id="sharklocal.MQTTVacuumClient.monitor"><code class="name flex">
+<span>async def <span class="ident">monitor</span></span>(<span>self,<br>callback: Callable[[<a title="sharklocal.VacuumStatus" href="#sharklocal.VacuumStatus">VacuumStatus</a>], None],<br>*,<br>stop_event: Optional[asyncio.Event] = None) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def monitor(
+    self,
+    callback: Callable[[VacuumStatus], None],
+    *,
+    stop_event: Optional[asyncio.Event] = None,
+) -&gt; None:
+    &#34;&#34;&#34;Subscribe to the vacuum&#39;s status topic and invoke *callback* per update.
+
+    Runs indefinitely until *stop_event* is set or the task is cancelled.
+    Both synchronous and ``async`` callbacks are supported.
+
+    Args:
+        callback: Called with each decoded ``VacuumStatus``.
+        stop_event: Optional ``asyncio.Event``; when set, monitoring stops
+            cleanly after the current message.
+    &#34;&#34;&#34;
+    try:
+        import aiomqtt
+    except ImportError as exc:
+        raise ConnectError(&#34;aiomqtt is required for MQTT support&#34;) from exc
+
+    try:
+        async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+            await client.subscribe(self.mapping.status_topic)
+            async for message in client.messages:
+                if stop_event and stop_event.is_set():
+                    return
+                try:
+                    status = self._decode_status(bytes(message.payload))
+                except (DecoderError, CommandError):
+                    continue  # Skip malformed messages silently
+                if asyncio.iscoroutinefunction(callback):
+                    await callback(status)
+                else:
+                    callback(status)
+
+    except (ActionNotSupportedError, CommandError, ConnectError, DecoderError):
+        raise
+    except Exception as exc:
+        raise ConnectError(
+            f&#34;MQTT monitor lost connection to {self.host}: {exc}&#34;
+        ) from exc</code></pre>
+</details>
+<div class="desc"><p>Subscribe to the vacuum's status topic and invoke <em>callback</em> per update.</p>
+<p>Runs indefinitely until <em>stop_event</em> is set or the task is cancelled.
+Both synchronous and <code>async</code> callbacks are supported.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>callback</code></strong></dt>
+<dd>Called with each decoded <code><a title="sharklocal.VacuumStatus" href="#sharklocal.VacuumStatus">VacuumStatus</a></code>.</dd>
+<dt><strong><code>stop_event</code></strong></dt>
+<dd>Optional <code>asyncio.Event</code>; when set, monitoring stops
+cleanly after the current message.</dd>
+</dl></div>
+</dd>
+<dt id="sharklocal.MQTTVacuumClient.supports"><code class="name flex">
+<span>def <span class="ident">supports</span></span>(<span>self, action: str) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def supports(self, action: str) -&gt; bool:
+    &#34;&#34;&#34;Return ``True`` if the mapping defines *action*.&#34;&#34;&#34;
+    return action in self.mapping.actions</code></pre>
+</details>
+<div class="desc"><p>Return <code>True</code> if the mapping defines <em>action</em>.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.MappingNotFoundError"><code class="flex name class">
+<span>class <span class="ident">MappingNotFoundError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MappingNotFoundError(SharklocalError):
+    &#34;&#34;&#34;Raised when a named mapping file cannot be located.&#34;&#34;&#34;</code></pre>
+</details>
+<div class="desc"><p>Raised when a named mapping file cannot be located.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="sharklocal.exceptions.SharklocalError" href="exceptions.html#sharklocal.exceptions.SharklocalError">SharklocalError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="sharklocal.ProbeResult"><code class="flex name class">
+<span>class <span class="ident">ProbeResult</span></span>
+<span>(</span><span>rest_mapping: Optional[str] = None, mqtt_mapping: Optional[str] = None)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ProbeResult:
+    &#34;&#34;&#34;Result of a :meth:`VacuumClient.probe` call.&#34;&#34;&#34;
+
+    rest_mapping: Optional[str] = None
+    &#34;&#34;&#34;``id`` of the REST mapping that responded successfully, or ``None``.&#34;&#34;&#34;
+
+    mqtt_mapping: Optional[str] = None
+    &#34;&#34;&#34;``id`` of the MQTT mapping that responded successfully, or ``None``.&#34;&#34;&#34;
+
+    @property
+    def has_rest(self) -&gt; bool:
+        &#34;&#34;&#34;``True`` if a working REST mapping was found.&#34;&#34;&#34;
+        return self.rest_mapping is not None
+
+    @property
+    def has_mqtt(self) -&gt; bool:
+        &#34;&#34;&#34;``True`` if a working MQTT mapping was found.&#34;&#34;&#34;
+        return self.mqtt_mapping is not None
+
+    @property
+    def is_connected(self) -&gt; bool:
+        &#34;&#34;&#34;``True`` if at least one transport responded successfully.&#34;&#34;&#34;
+        return self.has_rest or self.has_mqtt</code></pre>
+</details>
+<div class="desc"><p>Result of a :meth:<code><a title="sharklocal.VacuumClient.probe" href="#sharklocal.VacuumClient.probe">VacuumClient.probe()</a></code> call.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.ProbeResult.has_mqtt"><code class="name">prop <span class="ident">has_mqtt</span> : bool</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def has_mqtt(self) -&gt; bool:
+    &#34;&#34;&#34;``True`` if a working MQTT mapping was found.&#34;&#34;&#34;
+    return self.mqtt_mapping is not None</code></pre>
+</details>
+<div class="desc"><p><code>True</code> if a working MQTT mapping was found.</p></div>
+</dd>
+<dt id="sharklocal.ProbeResult.has_rest"><code class="name">prop <span class="ident">has_rest</span> : bool</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def has_rest(self) -&gt; bool:
+    &#34;&#34;&#34;``True`` if a working REST mapping was found.&#34;&#34;&#34;
+    return self.rest_mapping is not None</code></pre>
+</details>
+<div class="desc"><p><code>True</code> if a working REST mapping was found.</p></div>
+</dd>
+<dt id="sharklocal.ProbeResult.is_connected"><code class="name">prop <span class="ident">is_connected</span> : bool</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def is_connected(self) -&gt; bool:
+    &#34;&#34;&#34;``True`` if at least one transport responded successfully.&#34;&#34;&#34;
+    return self.has_rest or self.has_mqtt</code></pre>
+</details>
+<div class="desc"><p><code>True</code> if at least one transport responded successfully.</p></div>
+</dd>
+<dt id="sharklocal.ProbeResult.mqtt_mapping"><code class="name">var <span class="ident">mqtt_mapping</span> : str | None</code></dt>
+<dd>
+<div class="desc"><p><code>id</code> of the MQTT mapping that responded successfully, or <code>None</code>.</p></div>
+</dd>
+<dt id="sharklocal.ProbeResult.rest_mapping"><code class="name">var <span class="ident">rest_mapping</span> : str | None</code></dt>
+<dd>
+<div class="desc"><p><code>id</code> of the REST mapping that responded successfully, or <code>None</code>.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.RESTVacuumClient"><code class="flex name class">
+<span>class <span class="ident">RESTVacuumClient</span></span>
+<span>(</span><span>host: str, mapping: RESTMappingConfig)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RESTVacuumClient:
+    &#34;&#34;&#34;Async HTTP/HTTPS client for local vacuum control via the REST API.
+
+    Transport (``http`` vs ``https``) and SSL verification are driven by the
+    mapping configuration, so different models can use different settings
+    without code changes.
+    &#34;&#34;&#34;
+
+    def __init__(self, host: str, mapping: RESTMappingConfig) -&gt; None:
+        self.host = host
+        self.mapping = mapping
+        self._session: Optional[aiohttp.ClientSession] = None
+
+    @property
+    def base_url(self) -&gt; str:
+        return f&#34;{self.mapping.transport}://{self.host}:{self.mapping.port}&#34;
+
+    def supports(self, action: str) -&gt; bool:
+        &#34;&#34;&#34;Return ``True`` if the mapping defines *action*.&#34;&#34;&#34;
+        return action in self.mapping.actions
+
+    def _make_connector(self) -&gt; aiohttp.TCPConnector:
+        &#34;&#34;&#34;Build a ``TCPConnector`` with SSL settings from the mapping.&#34;&#34;&#34;
+        if self.mapping.transport == &#34;http&#34;:
+            return aiohttp.TCPConnector()
+        if not self.mapping.verify_ssl:
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+            return aiohttp.TCPConnector(ssl=ctx)
+        return aiohttp.TCPConnector()
+
+    async def _get_session(self) -&gt; aiohttp.ClientSession:
+        if self._session is None or self._session.closed:
+            self._session = aiohttp.ClientSession(connector=self._make_connector())
+        return self._session
+
+    async def close(self) -&gt; None:
+        &#34;&#34;&#34;Close the underlying HTTP session.&#34;&#34;&#34;
+        if self._session and not self._session.closed:
+            await self._session.close()
+            self._session = None
+
+    async def call(self, action: str) -&gt; Any:
+        &#34;&#34;&#34;Execute a named action and return a normalized result.
+
+        Args:
+            action: Action name as defined in the mapping (e.g. ``&#34;get_status&#34;``).
+
+        Returns:
+            A normalized model object for query actions, or ``True`` for
+            fire-and-forget command actions.
+
+        Raises:
+            ActionNotSupportedError: If *action* is not in the mapping.
+            ConnectError: If the vacuum host cannot be reached.
+            CommandError: If the vacuum returns an HTTP error response.
+        &#34;&#34;&#34;
+        if not self.supports(action):
+            raise ActionNotSupportedError(
+                f&#34;REST mapping &#39;{self.mapping.id}&#39; does not support &#39;{action}&#39;&#34;
+            )
+
+        spec = self.mapping.actions[action]
+        url = f&#34;{self.base_url}{spec.path}&#34;
+        session = await self._get_session()
+
+        try:
+            async with session.request(
+                method=spec.method,
+                url=url,
+                json=spec.body,
+                headers=spec.headers,
+            ) as resp:
+                resp.raise_for_status()
+
+                if spec.response_map:
+                    data = await resp.json(content_type=None)
+                    return self._parse_response(spec.response_map, data)
+
+                # Command endpoints may return minimal or empty bodies.
+                try:
+                    return await resp.json(content_type=None)
+                except Exception:
+                    return True
+
+        except aiohttp.ClientConnectorError as exc:
+            raise ConnectError(
+                f&#34;Cannot connect to vacuum at {self.host}:{self.mapping.port}&#34;
+            ) from exc
+        except aiohttp.ClientResponseError as exc:
+            raise CommandError(
+                f&#34;REST request to {spec.path} failed with HTTP {exc.status}&#34;
+            ) from exc
+
+    # ------------------------------------------------------------------
+    # Response parsers
+    # ------------------------------------------------------------------
+
+    def _parse_response(self, response_map: str, data: Dict[str, Any]) -&gt; Any:
+        &#34;&#34;&#34;Dispatch to the appropriate parser for *response_map*.&#34;&#34;&#34;
+        parsers = {
+            &#34;status&#34;: self._parse_status,
+            &#34;events&#34;: self._parse_events,
+            &#34;robot_id&#34;: self._parse_robot_id,
+            &#34;wifi_status&#34;: self._parse_wifi_status,
+        }
+        parser = parsers.get(response_map)
+        return parser(data) if parser else data
+
+    def _parse_status(self, data: Dict[str, Any]) -&gt; VacuumStatus:
+        raw_mode = str(data.get(&#34;mode&#34;, &#34;&#34;)).lower()
+        charging_raw = str(data.get(&#34;charging&#34;, &#34;&#34;)).lower()
+
+        # The API returns &#34;connected&#34; when charging and &#34;unconnected&#34; when not.
+        charging = charging_raw == &#34;connected&#34;
+
+        # &#34;ready&#34; is context-dependent: combined with &#34;unconnected&#34; it means the
+        # vacuum is stopped and away from the dock (e.g. paused mid-run), not docked.
+        if raw_mode == &#34;ready&#34; and not charging:
+            mode = VacuumMode.IDLE
+        else:
+            mode_str = self.mapping.mode_map.get(raw_mode, &#34;unknown&#34;)
+            try:
+                mode = VacuumMode(mode_str)
+            except ValueError:
+                mode = VacuumMode.UNKNOWN
+
+        return VacuumStatus(
+            mode=mode,
+            battery_level=data.get(&#34;battery_level&#34;),
+            charging=charging,
+            raw=data,
+        )
+
+    def _parse_events(self, data: Dict[str, Any]) -&gt; List[VacuumEvent]:
+        return [
+            VacuumEvent(
+                id=evt.get(&#34;id&#34;, 0),
+                type=evt.get(&#34;type&#34;, &#34;&#34;),
+                type_id=evt.get(&#34;type_id&#34;, 0),
+                timestamp=evt.get(&#34;timestamp&#34;, {}),
+                current_status=evt.get(&#34;current_status&#34;, &#34;&#34;),
+                source_type=evt.get(&#34;source_type&#34;, &#34;&#34;),
+                raw=evt,
+            )
+            for evt in data.get(&#34;robot_events&#34;, [])
+        ]
+
+    def _parse_robot_id(self, data: Dict[str, Any]) -&gt; DeviceInfo:
+        # Per the API docs, use the top-level &#39;firmware&#39; value for diagnostics.
+        # Per-device entries in the &#39;devices&#39; array can be ignored.
+        firmware = data.get(&#34;firmware&#34;) or None
+        return DeviceInfo(firmware=firmware, raw=data)
+
+    def _parse_wifi_status(self, data: Dict[str, Any]) -&gt; DeviceInfo:
+        return DeviceInfo(
+            mac_address=data.get(&#34;mac_address&#34;),
+            ip_address=data.get(&#34;ip_address&#34;),
+            ssid=data.get(&#34;ssid&#34;),
+            rssi=data.get(&#34;rssi&#34;),
+            raw=data,
+        )</code></pre>
+</details>
+<div class="desc"><p>Async HTTP/HTTPS client for local vacuum control via the REST API.</p>
+<p>Transport (<code>http</code> vs <code>https</code>) and SSL verification are driven by the
+mapping configuration, so different models can use different settings
+without code changes.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.RESTVacuumClient.base_url"><code class="name">prop <span class="ident">base_url</span> : str</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def base_url(self) -&gt; str:
+    return f&#34;{self.mapping.transport}://{self.host}:{self.mapping.port}&#34;</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="sharklocal.RESTVacuumClient.call"><code class="name flex">
+<span>async def <span class="ident">call</span></span>(<span>self, action: str) ‑> Any</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def call(self, action: str) -&gt; Any:
+    &#34;&#34;&#34;Execute a named action and return a normalized result.
+
+    Args:
+        action: Action name as defined in the mapping (e.g. ``&#34;get_status&#34;``).
+
+    Returns:
+        A normalized model object for query actions, or ``True`` for
+        fire-and-forget command actions.
+
+    Raises:
+        ActionNotSupportedError: If *action* is not in the mapping.
+        ConnectError: If the vacuum host cannot be reached.
+        CommandError: If the vacuum returns an HTTP error response.
+    &#34;&#34;&#34;
+    if not self.supports(action):
+        raise ActionNotSupportedError(
+            f&#34;REST mapping &#39;{self.mapping.id}&#39; does not support &#39;{action}&#39;&#34;
+        )
+
+    spec = self.mapping.actions[action]
+    url = f&#34;{self.base_url}{spec.path}&#34;
+    session = await self._get_session()
+
+    try:
+        async with session.request(
+            method=spec.method,
+            url=url,
+            json=spec.body,
+            headers=spec.headers,
+        ) as resp:
+            resp.raise_for_status()
+
+            if spec.response_map:
+                data = await resp.json(content_type=None)
+                return self._parse_response(spec.response_map, data)
+
+            # Command endpoints may return minimal or empty bodies.
+            try:
+                return await resp.json(content_type=None)
+            except Exception:
+                return True
+
+    except aiohttp.ClientConnectorError as exc:
+        raise ConnectError(
+            f&#34;Cannot connect to vacuum at {self.host}:{self.mapping.port}&#34;
+        ) from exc
+    except aiohttp.ClientResponseError as exc:
+        raise CommandError(
+            f&#34;REST request to {spec.path} failed with HTTP {exc.status}&#34;
+        ) from exc</code></pre>
+</details>
+<div class="desc"><p>Execute a named action and return a normalized result.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>action</code></strong></dt>
+<dd>Action name as defined in the mapping (e.g. <code>"get_status"</code>).</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A normalized model object for query actions, or <code>True</code> for
+fire-and-forget command actions.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="sharklocal.ActionNotSupportedError" href="#sharklocal.ActionNotSupportedError">ActionNotSupportedError</a></code></dt>
+<dd>If <em>action</em> is not in the mapping.</dd>
+<dt><code><a title="sharklocal.ConnectError" href="#sharklocal.ConnectError">ConnectError</a></code></dt>
+<dd>If the vacuum host cannot be reached.</dd>
+<dt><code><a title="sharklocal.CommandError" href="#sharklocal.CommandError">CommandError</a></code></dt>
+<dd>If the vacuum returns an HTTP error response.</dd>
+</dl></div>
+</dd>
+<dt id="sharklocal.RESTVacuumClient.close"><code class="name flex">
+<span>async def <span class="ident">close</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def close(self) -&gt; None:
+    &#34;&#34;&#34;Close the underlying HTTP session.&#34;&#34;&#34;
+    if self._session and not self._session.closed:
+        await self._session.close()
+        self._session = None</code></pre>
+</details>
+<div class="desc"><p>Close the underlying HTTP session.</p></div>
+</dd>
+<dt id="sharklocal.RESTVacuumClient.supports"><code class="name flex">
+<span>def <span class="ident">supports</span></span>(<span>self, action: str) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def supports(self, action: str) -&gt; bool:
+    &#34;&#34;&#34;Return ``True`` if the mapping defines *action*.&#34;&#34;&#34;
+    return action in self.mapping.actions</code></pre>
+</details>
+<div class="desc"><p>Return <code>True</code> if the mapping defines <em>action</em>.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.SharklocalError"><code class="flex name class">
+<span>class <span class="ident">SharklocalError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SharklocalError(Exception):
+    &#34;&#34;&#34;Base exception for all sharklocal errors.&#34;&#34;&#34;</code></pre>
+</details>
+<div class="desc"><p>Base exception for all sharklocal errors.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="sharklocal.exceptions.ActionNotSupportedError" href="exceptions.html#sharklocal.exceptions.ActionNotSupportedError">ActionNotSupportedError</a></li>
+<li><a title="sharklocal.exceptions.CommandError" href="exceptions.html#sharklocal.exceptions.CommandError">CommandError</a></li>
+<li><a title="sharklocal.exceptions.ConnectError" href="exceptions.html#sharklocal.exceptions.ConnectError">ConnectError</a></li>
+<li><a title="sharklocal.exceptions.DecoderError" href="exceptions.html#sharklocal.exceptions.DecoderError">DecoderError</a></li>
+<li><a title="sharklocal.exceptions.MappingNotFoundError" href="exceptions.html#sharklocal.exceptions.MappingNotFoundError">MappingNotFoundError</a></li>
+</ul>
+</dd>
+<dt id="sharklocal.VacuumClient"><code class="flex name class">
+<span>class <span class="ident">VacuumClient</span></span>
+<span>(</span><span>host: str,<br>*,<br>rest_mappings: Optional[Union[str, List[str]]] = None,<br>mqtt_mappings: Optional[Union[str, List[str]]] = None,<br>mapping_search_paths: Optional[List[Union[str, Path]]] = None)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class VacuumClient:
+    &#34;&#34;&#34;Unified vacuum client with automatic transport selection.
+
+    REST is preferred when both transports support an action. MQTT is used as a
+    fallback only when REST is unreachable (``ConnectError``). If a transport is
+    not configured, or does not define an action, it is skipped automatically.
+
+    Pass a list of mapping names to enable auto-detection: call :meth:`probe`
+    during setup to test each mapping against the device and pin the working one
+    for all subsequent calls. With a single mapping per transport the client
+    works immediately without probing.
+
+    Example — single mapping (no probe required)::
+
+        async with VacuumClient(
+            &#34;192.168.1.100&#34;,
+            rest_mappings=&#34;sharkiq_v1&#34;,
+            mqtt_mappings=&#34;sharkiq_v1&#34;,
+        ) as vacuum:
+            status = await vacuum.get_status()
+            await vacuum.start_cleaning()
+
+    Example — multiple candidates with probe::
+
+        async with VacuumClient(
+            &#34;192.168.1.100&#34;,
+            rest_mappings=[&#34;sharkiq_v1&#34;, &#34;other_model_v1&#34;],
+            mqtt_mappings=[&#34;sharkiq_v1&#34;],
+        ) as vacuum:
+            result = await vacuum.probe()
+            print(result.rest_mapping)   # e.g. &#34;sharkiq_v1&#34;
+            status = await vacuum.get_status()
+
+    Args:
+        host: IP address or hostname of the vacuum.
+        rest_mappings: One REST mapping name, or a list of candidates to probe.
+        mqtt_mappings: One MQTT mapping name, or a list of candidates to probe.
+        mapping_search_paths: Additional directories to search for mapping files
+            before falling back to built-in mappings.
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        host: str,
+        *,
+        rest_mappings: Optional[Union[str, List[str]]] = None,
+        mqtt_mappings: Optional[Union[str, List[str]]] = None,
+        mapping_search_paths: Optional[List[Union[str, Path]]] = None,
+    ) -&gt; None:
+        self.host = host
+        paths = mapping_search_paths or []
+
+        # Active (pinned) transport clients. Set immediately when a single
+        # mapping is provided; set by probe() when multiple are configured.
+        self._rest: Optional[RESTVacuumClient] = None
+        self._mqtt: Optional[MQTTVacuumClient] = None
+        self._status_callback: Optional[Callable[[VacuumStatus], None]] = None
+        self._monitor_stop: Optional[asyncio.Event] = None
+        self._monitor_task: Optional[asyncio.Task] = None
+
+        # Primary transport in use. &#34;REST&#34; when REST is pinned and reachable,
+        # &#34;MQTT&#34; when only MQTT is available, &#34;NONE&#34; until probe() confirms a
+        # working transport (or a single mapping is auto-pinned).
+        self.via: str = &#34;NONE&#34;
+
+        def _to_list(val: Optional[Union[str, List[str]]]) -&gt; List[str]:
+            if val is None:
+                return []
+            return [val] if isinstance(val, str) else list(val)
+
+        self._rest_candidates: List[RESTVacuumClient] = [
+            RESTVacuumClient(host, load_rest_mapping(name, paths))
+            for name in _to_list(rest_mappings)
+        ]
+        self._mqtt_candidates: List[MQTTVacuumClient] = [
+            MQTTVacuumClient(host, load_mqtt_mapping(name, paths))
+            for name in _to_list(mqtt_mappings)
+        ]
+
+        # Auto-pin when only one candidate is loaded — no probe() required.
+        if len(self._rest_candidates) == 1:
+            self._rest = self._rest_candidates[0]
+            self.via = &#34;REST&#34;
+        if len(self._mqtt_candidates) == 1:
+            self._mqtt = self._mqtt_candidates[0]
+            if self.via == &#34;NONE&#34;:
+                self.via = &#34;MQTT&#34;
+
+    # ------------------------------------------------------------------
+    # Context manager
+    # ------------------------------------------------------------------
+
+    async def __aenter__(self) -&gt; VacuumClient:
+        return self
+
+    async def __aexit__(self, *_: Any) -&gt; None:
+        await self.close()
+
+    async def close(self) -&gt; None:
+        &#34;&#34;&#34;Stop monitoring and close all underlying connections.&#34;&#34;&#34;
+        await self.stop_monitoring()
+        for client in self._rest_candidates:
+            await client.close()
+
+    # ------------------------------------------------------------------
+    # High-level action API
+    # ------------------------------------------------------------------
+
+    async def start_cleaning(self) -&gt; bool:
+        &#34;&#34;&#34;Start a full cleaning run.&#34;&#34;&#34;
+        return await self._execute(&#34;start_cleaning&#34;)
+
+    async def stop(self) -&gt; bool:
+        &#34;&#34;&#34;Pause the current cleaning task.&#34;&#34;&#34;
+        return await self._execute(&#34;stop&#34;)
+
+    async def go_home(self) -&gt; bool:
+        &#34;&#34;&#34;Send the vacuum back to its dock.&#34;&#34;&#34;
+        return await self._execute(&#34;go_home&#34;)
+
+    async def explore(self) -&gt; bool:
+        &#34;&#34;&#34;Begin a mapping/exploration run.&#34;&#34;&#34;
+        return await self._execute(&#34;explore&#34;)
+
+    async def get_status(self) -&gt; VacuumStatus:
+        &#34;&#34;&#34;Return the current vacuum status.&#34;&#34;&#34;
+        return await self._execute(&#34;get_status&#34;)
+
+    async def get_events(self) -&gt; List[VacuumEvent]:
+        &#34;&#34;&#34;Return the event log since last startup.&#34;&#34;&#34;
+        return await self._execute(&#34;get_events&#34;)
+
+    async def get_device_info(self) -&gt; DeviceInfo:
+        &#34;&#34;&#34;Return firmware and device identity information.&#34;&#34;&#34;
+        return await self._execute(&#34;get_robot_id&#34;)
+
+    async def get_wifi_status(self) -&gt; DeviceInfo:
+        &#34;&#34;&#34;Return Wi-Fi connection details including MAC address.&#34;&#34;&#34;
+        return await self._execute(&#34;get_wifi_status&#34;)
+
+    # ------------------------------------------------------------------
+    # Mapping probe
+    # ------------------------------------------------------------------
+
+    async def probe(self) -&gt; ProbeResult:
+        &#34;&#34;&#34;Test all configured mappings and pin the best working one per transport.
+
+        Each REST mapping is tested in the order supplied by calling
+        ``get_status``. The first mapping that responds successfully is pinned
+        as the active REST transport. The same process is then repeated for
+        MQTT. Previously pinned transports are replaced if probe is called again.
+
+        Call this during integration setup when multiple mapping candidates are
+        configured. With a single mapping per transport the client works without
+        calling probe.
+
+        Returns:
+            :class:`ProbeResult` with the ``id`` of each selected mapping, or
+            ``None`` for a transport where no mapping succeeded.
+        &#34;&#34;&#34;
+        rest_id: Optional[str] = None
+        mqtt_id: Optional[str] = None
+
+        for client in self._rest_candidates:
+            try:
+                await client.call(&#34;get_status&#34;)
+                self._rest = client
+                rest_id = client.mapping.id
+                break
+            except SharklocalError:
+                continue
+
+        for client in self._mqtt_candidates:
+            try:
+                await client.call(&#34;get_status&#34;)
+                self._mqtt = client
+                mqtt_id = client.mapping.id
+                break
+            except SharklocalError:
+                continue
+
+        if rest_id is not None:
+            self.via = &#34;REST&#34;
+        elif mqtt_id is not None:
+            self.via = &#34;MQTT&#34;
+        else:
+            self.via = &#34;NONE&#34;
+
+        return ProbeResult(rest_mapping=rest_id, mqtt_mapping=mqtt_id)
+
+    # ------------------------------------------------------------------
+    # Real-time monitoring (MQTT only)
+    # ------------------------------------------------------------------
+
+    def on_status_update(self, callback: Callable[[VacuumStatus], None]) -&gt; None:
+        &#34;&#34;&#34;Register a callback to receive real-time status updates via MQTT.
+
+        The callback receives a ``VacuumStatus`` on every status message.
+        Both synchronous and ``async`` callables are accepted.
+
+        Must be called before :meth:`start_monitoring`.
+        &#34;&#34;&#34;
+        if not self._mqtt_candidates:
+            raise SharklocalError(
+                &#34;An MQTT mapping is required for real-time monitoring&#34;
+            )
+        self._status_callback = callback
+
+    async def start_monitoring(self) -&gt; None:
+        &#34;&#34;&#34;Begin monitoring the vacuum status in the background via MQTT.
+
+        Call :meth:`on_status_update` first to register a callback. When
+        multiple MQTT mappings are configured, call :meth:`probe` first to
+        determine the active mapping. Safe to call repeatedly; a second call
+        while already running is a no-op.
+        &#34;&#34;&#34;
+        if not self._mqtt_candidates:
+            raise SharklocalError(&#34;An MQTT mapping is required for monitoring&#34;)
+        if self._mqtt is None:
+            raise SharklocalError(
+                &#34;Call probe() first to determine the active MQTT mapping &#34;
+                &#34;when multiple MQTT mappings are configured&#34;
+            )
+        if self._status_callback is None:
+            raise SharklocalError(
+                &#34;Register a callback with on_status_update() before starting monitoring&#34;
+            )
+        if self._monitor_task and not self._monitor_task.done():
+            return  # Already running
+
+        self._monitor_stop = asyncio.Event()
+        self._monitor_task = asyncio.ensure_future(
+            self._mqtt.monitor(self._status_callback, stop_event=self._monitor_stop)
+        )
+
+    async def stop_monitoring(self) -&gt; None:
+        &#34;&#34;&#34;Stop background status monitoring if it is running.&#34;&#34;&#34;
+        if self._monitor_stop:
+            self._monitor_stop.set()
+        if self._monitor_task and not self._monitor_task.done():
+            self._monitor_task.cancel()
+            try:
+                await self._monitor_task
+            except (asyncio.CancelledError, Exception):
+                pass
+        self._monitor_task = None
+        self._monitor_stop = None
+
+    # ------------------------------------------------------------------
+    # Transport inspection
+    # ------------------------------------------------------------------
+
+    def supported_actions(self) -&gt; List[str]:
+        &#34;&#34;&#34;Return all action names supported by any configured transport.&#34;&#34;&#34;
+        actions: set[str] = set()
+        rest_opts = [self._rest] if self._rest else self._rest_candidates
+        mqtt_opts = [self._mqtt] if self._mqtt else self._mqtt_candidates
+        for client in rest_opts:
+            actions.update(client.mapping.actions)
+        for client in mqtt_opts:
+            actions.update(client.mapping.actions)
+        return sorted(actions)
+
+    def transports_for(self, action: str) -&gt; List[str]:
+        &#34;&#34;&#34;Return which transports support *action*, in evaluation priority order.
+
+        REST is listed before MQTT. When multiple candidates exist for a
+        transport, any candidate supporting the action counts.
+        &#34;&#34;&#34;
+        result = []
+        rest_opts = [self._rest] if self._rest else self._rest_candidates
+        mqtt_opts = [self._mqtt] if self._mqtt else self._mqtt_candidates
+        if any(c.supports(action) for c in rest_opts):
+            result.append(&#34;rest&#34;)
+        if any(c.supports(action) for c in mqtt_opts):
+            result.append(&#34;mqtt&#34;)
+        return result
+
+    @property
+    def active_rest_mapping(self) -&gt; Optional[str]:
+        &#34;&#34;&#34;The ``id`` of the currently pinned REST mapping, or ``None``.&#34;&#34;&#34;
+        return self._rest.mapping.id if self._rest else None
+
+    @property
+    def active_mqtt_mapping(self) -&gt; Optional[str]:
+        &#34;&#34;&#34;The ``id`` of the currently pinned MQTT mapping, or ``None``.&#34;&#34;&#34;
+        return self._mqtt.mapping.id if self._mqtt else None
+
+    # ------------------------------------------------------------------
+    # Internal transport evaluation
+    # ------------------------------------------------------------------
+
+    async def _execute(self, action: str) -&gt; Any:
+        &#34;&#34;&#34;Execute *action* using the best available transport.
+
+        When a transport has been pinned (single mapping configured, or after
+        :meth:`probe` ran), only that client is tried for its transport.
+        When no client is pinned (multiple candidates, probe not yet called),
+        all candidates for that transport are tried in the supplied order.
+
+        Evaluation order:
+
+        1. REST candidates — tried left to right; ``ConnectError`` moves to the
+           next candidate. Any other exception propagates immediately.
+        2. MQTT candidates — tried when all REST candidates raise ``ConnectError``
+           or no REST candidate supports the action.
+
+        The ``ConnectError`` from the last exhausted candidate is re-raised when
+        no transport can complete the action.
+        &#34;&#34;&#34;
+        rest_options: List[RESTVacuumClient] = (
+            [self._rest] if self._rest is not None else self._rest_candidates
+        )
+        mqtt_options: List[MQTTVacuumClient] = (
+            [self._mqtt] if self._mqtt is not None else self._mqtt_candidates
+        )
+        rest_options = [c for c in rest_options if c.supports(action)]
+        mqtt_options = [c for c in mqtt_options if c.supports(action)]
+
+        if not rest_options and not mqtt_options:
+            raise ActionNotSupportedError(
+                f&#34;Action &#39;{action}&#39; is not supported by any configured mapping. &#34;
+                f&#34;Supported actions: {self.supported_actions()}&#34;
+            )
+
+        last_connect_error: Optional[ConnectError] = None
+
+        for client in rest_options:
+            try:
+                return await client.call(action)
+            except ConnectError as exc:
+                last_connect_error = exc
+
+        for client in mqtt_options:
+            try:
+                return await client.call(action)
+            except ConnectError as exc:
+                last_connect_error = exc
+
+        if last_connect_error:
+            raise last_connect_error
+        raise ActionNotSupportedError(
+            f&#34;No configured transport could execute action &#39;{action}&#39;&#34;
+        )</code></pre>
+</details>
+<div class="desc"><p>Unified vacuum client with automatic transport selection.</p>
+<p>REST is preferred when both transports support an action. MQTT is used as a
+fallback only when REST is unreachable (<code><a title="sharklocal.ConnectError" href="#sharklocal.ConnectError">ConnectError</a></code>). If a transport is
+not configured, or does not define an action, it is skipped automatically.</p>
+<p>Pass a list of mapping names to enable auto-detection: call :meth:<code>probe</code>
+during setup to test each mapping against the device and pin the working one
+for all subsequent calls. With a single mapping per transport the client
+works immediately without probing.</p>
+<p>Example — single mapping (no probe required)::</p>
+<pre><code>async with VacuumClient(
+    "192.168.1.100",
+    rest_mappings="sharkiq_v1",
+    mqtt_mappings="sharkiq_v1",
+) as vacuum:
+    status = await vacuum.get_status()
+    await vacuum.start_cleaning()
+</code></pre>
+<p>Example — multiple candidates with probe::</p>
+<pre><code>async with VacuumClient(
+    "192.168.1.100",
+    rest_mappings=["sharkiq_v1", "other_model_v1"],
+    mqtt_mappings=["sharkiq_v1"],
+) as vacuum:
+    result = await vacuum.probe()
+    print(result.rest_mapping)   # e.g. "sharkiq_v1"
+    status = await vacuum.get_status()
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>host</code></strong></dt>
+<dd>IP address or hostname of the vacuum.</dd>
+<dt><strong><code>rest_mappings</code></strong></dt>
+<dd>One REST mapping name, or a list of candidates to probe.</dd>
+<dt><strong><code>mqtt_mappings</code></strong></dt>
+<dd>One MQTT mapping name, or a list of candidates to probe.</dd>
+<dt><strong><code>mapping_search_paths</code></strong></dt>
+<dd>Additional directories to search for mapping files
+before falling back to built-in mappings.</dd>
+</dl></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.VacuumClient.active_mqtt_mapping"><code class="name">prop <span class="ident">active_mqtt_mapping</span> : Optional[str]</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def active_mqtt_mapping(self) -&gt; Optional[str]:
+    &#34;&#34;&#34;The ``id`` of the currently pinned MQTT mapping, or ``None``.&#34;&#34;&#34;
+    return self._mqtt.mapping.id if self._mqtt else None</code></pre>
+</details>
+<div class="desc"><p>The <code>id</code> of the currently pinned MQTT mapping, or <code>None</code>.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.active_rest_mapping"><code class="name">prop <span class="ident">active_rest_mapping</span> : Optional[str]</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def active_rest_mapping(self) -&gt; Optional[str]:
+    &#34;&#34;&#34;The ``id`` of the currently pinned REST mapping, or ``None``.&#34;&#34;&#34;
+    return self._rest.mapping.id if self._rest else None</code></pre>
+</details>
+<div class="desc"><p>The <code>id</code> of the currently pinned REST mapping, or <code>None</code>.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="sharklocal.VacuumClient.close"><code class="name flex">
+<span>async def <span class="ident">close</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def close(self) -&gt; None:
+    &#34;&#34;&#34;Stop monitoring and close all underlying connections.&#34;&#34;&#34;
+    await self.stop_monitoring()
+    for client in self._rest_candidates:
+        await client.close()</code></pre>
+</details>
+<div class="desc"><p>Stop monitoring and close all underlying connections.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.explore"><code class="name flex">
+<span>async def <span class="ident">explore</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def explore(self) -&gt; bool:
+    &#34;&#34;&#34;Begin a mapping/exploration run.&#34;&#34;&#34;
+    return await self._execute(&#34;explore&#34;)</code></pre>
+</details>
+<div class="desc"><p>Begin a mapping/exploration run.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.get_device_info"><code class="name flex">
+<span>async def <span class="ident">get_device_info</span></span>(<span>self) ‑> <a title="sharklocal.models.DeviceInfo" href="models.html#sharklocal.models.DeviceInfo">DeviceInfo</a></span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def get_device_info(self) -&gt; DeviceInfo:
+    &#34;&#34;&#34;Return firmware and device identity information.&#34;&#34;&#34;
+    return await self._execute(&#34;get_robot_id&#34;)</code></pre>
+</details>
+<div class="desc"><p>Return firmware and device identity information.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.get_events"><code class="name flex">
+<span>async def <span class="ident">get_events</span></span>(<span>self) ‑> List[<a title="sharklocal.models.VacuumEvent" href="models.html#sharklocal.models.VacuumEvent">VacuumEvent</a>]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def get_events(self) -&gt; List[VacuumEvent]:
+    &#34;&#34;&#34;Return the event log since last startup.&#34;&#34;&#34;
+    return await self._execute(&#34;get_events&#34;)</code></pre>
+</details>
+<div class="desc"><p>Return the event log since last startup.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.get_status"><code class="name flex">
+<span>async def <span class="ident">get_status</span></span>(<span>self) ‑> <a title="sharklocal.models.VacuumStatus" href="models.html#sharklocal.models.VacuumStatus">VacuumStatus</a></span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def get_status(self) -&gt; VacuumStatus:
+    &#34;&#34;&#34;Return the current vacuum status.&#34;&#34;&#34;
+    return await self._execute(&#34;get_status&#34;)</code></pre>
+</details>
+<div class="desc"><p>Return the current vacuum status.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.get_wifi_status"><code class="name flex">
+<span>async def <span class="ident">get_wifi_status</span></span>(<span>self) ‑> <a title="sharklocal.models.DeviceInfo" href="models.html#sharklocal.models.DeviceInfo">DeviceInfo</a></span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def get_wifi_status(self) -&gt; DeviceInfo:
+    &#34;&#34;&#34;Return Wi-Fi connection details including MAC address.&#34;&#34;&#34;
+    return await self._execute(&#34;get_wifi_status&#34;)</code></pre>
+</details>
+<div class="desc"><p>Return Wi-Fi connection details including MAC address.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.go_home"><code class="name flex">
+<span>async def <span class="ident">go_home</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def go_home(self) -&gt; bool:
+    &#34;&#34;&#34;Send the vacuum back to its dock.&#34;&#34;&#34;
+    return await self._execute(&#34;go_home&#34;)</code></pre>
+</details>
+<div class="desc"><p>Send the vacuum back to its dock.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.on_status_update"><code class="name flex">
+<span>def <span class="ident">on_status_update</span></span>(<span>self,<br>callback: Callable[[<a title="sharklocal.VacuumStatus" href="#sharklocal.VacuumStatus">VacuumStatus</a>], None]) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_status_update(self, callback: Callable[[VacuumStatus], None]) -&gt; None:
+    &#34;&#34;&#34;Register a callback to receive real-time status updates via MQTT.
+
+    The callback receives a ``VacuumStatus`` on every status message.
+    Both synchronous and ``async`` callables are accepted.
+
+    Must be called before :meth:`start_monitoring`.
+    &#34;&#34;&#34;
+    if not self._mqtt_candidates:
+        raise SharklocalError(
+            &#34;An MQTT mapping is required for real-time monitoring&#34;
+        )
+    self._status_callback = callback</code></pre>
+</details>
+<div class="desc"><p>Register a callback to receive real-time status updates via MQTT.</p>
+<p>The callback receives a <code><a title="sharklocal.VacuumStatus" href="#sharklocal.VacuumStatus">VacuumStatus</a></code> on every status message.
+Both synchronous and <code>async</code> callables are accepted.</p>
+<p>Must be called before :meth:<code>start_monitoring</code>.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.probe"><code class="name flex">
+<span>async def <span class="ident">probe</span></span>(<span>self) ‑> <a title="sharklocal.models.ProbeResult" href="models.html#sharklocal.models.ProbeResult">ProbeResult</a></span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def probe(self) -&gt; ProbeResult:
+    &#34;&#34;&#34;Test all configured mappings and pin the best working one per transport.
+
+    Each REST mapping is tested in the order supplied by calling
+    ``get_status``. The first mapping that responds successfully is pinned
+    as the active REST transport. The same process is then repeated for
+    MQTT. Previously pinned transports are replaced if probe is called again.
+
+    Call this during integration setup when multiple mapping candidates are
+    configured. With a single mapping per transport the client works without
+    calling probe.
+
+    Returns:
+        :class:`ProbeResult` with the ``id`` of each selected mapping, or
+        ``None`` for a transport where no mapping succeeded.
+    &#34;&#34;&#34;
+    rest_id: Optional[str] = None
+    mqtt_id: Optional[str] = None
+
+    for client in self._rest_candidates:
+        try:
+            await client.call(&#34;get_status&#34;)
+            self._rest = client
+            rest_id = client.mapping.id
+            break
+        except SharklocalError:
+            continue
+
+    for client in self._mqtt_candidates:
+        try:
+            await client.call(&#34;get_status&#34;)
+            self._mqtt = client
+            mqtt_id = client.mapping.id
+            break
+        except SharklocalError:
+            continue
+
+    if rest_id is not None:
+        self.via = &#34;REST&#34;
+    elif mqtt_id is not None:
+        self.via = &#34;MQTT&#34;
+    else:
+        self.via = &#34;NONE&#34;
+
+    return ProbeResult(rest_mapping=rest_id, mqtt_mapping=mqtt_id)</code></pre>
+</details>
+<div class="desc"><p>Test all configured mappings and pin the best working one per transport.</p>
+<p>Each REST mapping is tested in the order supplied by calling
+<code>get_status</code>. The first mapping that responds successfully is pinned
+as the active REST transport. The same process is then repeated for
+MQTT. Previously pinned transports are replaced if probe is called again.</p>
+<p>Call this during integration setup when multiple mapping candidates are
+configured. With a single mapping per transport the client works without
+calling probe.</p>
+<h2 id="returns">Returns</h2>
+<p>:class:<code><a title="sharklocal.ProbeResult" href="#sharklocal.ProbeResult">ProbeResult</a></code> with the <code>id</code> of each selected mapping, or
+<code>None</code> for a transport where no mapping succeeded.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.start_cleaning"><code class="name flex">
+<span>async def <span class="ident">start_cleaning</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def start_cleaning(self) -&gt; bool:
+    &#34;&#34;&#34;Start a full cleaning run.&#34;&#34;&#34;
+    return await self._execute(&#34;start_cleaning&#34;)</code></pre>
+</details>
+<div class="desc"><p>Start a full cleaning run.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.start_monitoring"><code class="name flex">
+<span>async def <span class="ident">start_monitoring</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def start_monitoring(self) -&gt; None:
+    &#34;&#34;&#34;Begin monitoring the vacuum status in the background via MQTT.
+
+    Call :meth:`on_status_update` first to register a callback. When
+    multiple MQTT mappings are configured, call :meth:`probe` first to
+    determine the active mapping. Safe to call repeatedly; a second call
+    while already running is a no-op.
+    &#34;&#34;&#34;
+    if not self._mqtt_candidates:
+        raise SharklocalError(&#34;An MQTT mapping is required for monitoring&#34;)
+    if self._mqtt is None:
+        raise SharklocalError(
+            &#34;Call probe() first to determine the active MQTT mapping &#34;
+            &#34;when multiple MQTT mappings are configured&#34;
+        )
+    if self._status_callback is None:
+        raise SharklocalError(
+            &#34;Register a callback with on_status_update() before starting monitoring&#34;
+        )
+    if self._monitor_task and not self._monitor_task.done():
+        return  # Already running
+
+    self._monitor_stop = asyncio.Event()
+    self._monitor_task = asyncio.ensure_future(
+        self._mqtt.monitor(self._status_callback, stop_event=self._monitor_stop)
+    )</code></pre>
+</details>
+<div class="desc"><p>Begin monitoring the vacuum status in the background via MQTT.</p>
+<p>Call :meth:<code>on_status_update</code> first to register a callback. When
+multiple MQTT mappings are configured, call :meth:<code>probe</code> first to
+determine the active mapping. Safe to call repeatedly; a second call
+while already running is a no-op.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.stop"><code class="name flex">
+<span>async def <span class="ident">stop</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def stop(self) -&gt; bool:
+    &#34;&#34;&#34;Pause the current cleaning task.&#34;&#34;&#34;
+    return await self._execute(&#34;stop&#34;)</code></pre>
+</details>
+<div class="desc"><p>Pause the current cleaning task.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.stop_monitoring"><code class="name flex">
+<span>async def <span class="ident">stop_monitoring</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def stop_monitoring(self) -&gt; None:
+    &#34;&#34;&#34;Stop background status monitoring if it is running.&#34;&#34;&#34;
+    if self._monitor_stop:
+        self._monitor_stop.set()
+    if self._monitor_task and not self._monitor_task.done():
+        self._monitor_task.cancel()
+        try:
+            await self._monitor_task
+        except (asyncio.CancelledError, Exception):
+            pass
+    self._monitor_task = None
+    self._monitor_stop = None</code></pre>
+</details>
+<div class="desc"><p>Stop background status monitoring if it is running.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.supported_actions"><code class="name flex">
+<span>def <span class="ident">supported_actions</span></span>(<span>self) ‑> List[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def supported_actions(self) -&gt; List[str]:
+    &#34;&#34;&#34;Return all action names supported by any configured transport.&#34;&#34;&#34;
+    actions: set[str] = set()
+    rest_opts = [self._rest] if self._rest else self._rest_candidates
+    mqtt_opts = [self._mqtt] if self._mqtt else self._mqtt_candidates
+    for client in rest_opts:
+        actions.update(client.mapping.actions)
+    for client in mqtt_opts:
+        actions.update(client.mapping.actions)
+    return sorted(actions)</code></pre>
+</details>
+<div class="desc"><p>Return all action names supported by any configured transport.</p></div>
+</dd>
+<dt id="sharklocal.VacuumClient.transports_for"><code class="name flex">
+<span>def <span class="ident">transports_for</span></span>(<span>self, action: str) ‑> List[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def transports_for(self, action: str) -&gt; List[str]:
+    &#34;&#34;&#34;Return which transports support *action*, in evaluation priority order.
+
+    REST is listed before MQTT. When multiple candidates exist for a
+    transport, any candidate supporting the action counts.
+    &#34;&#34;&#34;
+    result = []
+    rest_opts = [self._rest] if self._rest else self._rest_candidates
+    mqtt_opts = [self._mqtt] if self._mqtt else self._mqtt_candidates
+    if any(c.supports(action) for c in rest_opts):
+        result.append(&#34;rest&#34;)
+    if any(c.supports(action) for c in mqtt_opts):
+        result.append(&#34;mqtt&#34;)
+    return result</code></pre>
+</details>
+<div class="desc"><p>Return which transports support <em>action</em>, in evaluation priority order.</p>
+<p>REST is listed before MQTT. When multiple candidates exist for a
+transport, any candidate supporting the action counts.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.VacuumEvent"><code class="flex name class">
+<span>class <span class="ident">VacuumEvent</span></span>
+<span>(</span><span>id: int,<br>type: str,<br>type_id: int,<br>timestamp: Dict[str, int],<br>current_status: str,<br>source_type: str,<br>raw: Dict[str, Any] = &lt;factory&gt;)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class VacuumEvent:
+    &#34;&#34;&#34;A single event from the vacuum event log.&#34;&#34;&#34;
+
+    id: int
+    type: str
+    type_id: int
+    timestamp: Dict[str, int]
+    current_status: str
+    source_type: str
+    raw: Dict[str, Any] = field(default_factory=dict)</code></pre>
+</details>
+<div class="desc"><p>A single event from the vacuum event log.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.VacuumEvent.current_status"><code class="name">var <span class="ident">current_status</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumEvent.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumEvent.raw"><code class="name">var <span class="ident">raw</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumEvent.source_type"><code class="name">var <span class="ident">source_type</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumEvent.timestamp"><code class="name">var <span class="ident">timestamp</span> : Dict[str, int]</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumEvent.type"><code class="name">var <span class="ident">type</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumEvent.type_id"><code class="name">var <span class="ident">type_id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.VacuumMode"><code class="flex name class">
+<span>class <span class="ident">VacuumMode</span></span>
+<span>(</span><span>*args, **kwds)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class VacuumMode(str, Enum):
+    &#34;&#34;&#34;Normalized operating modes across all transports.&#34;&#34;&#34;
+
+    UNKNOWN = &#34;unknown&#34;
+    CLEANING = &#34;cleaning&#34;
+    RETURNING_TO_DOCK = &#34;returning_to_dock&#34;
+    DOCKING = &#34;docking&#34;
+    DOCKED = &#34;docked&#34;
+    IDLE = &#34;idle&#34;  # Powered on but not cleaning and not on the charging dock
+    EXPLORING = &#34;exploring&#34;  # Mapping/exploration run in progress</code></pre>
+</details>
+<div class="desc"><p>Normalized operating modes across all transports.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="sharklocal.VacuumMode.CLEANING"><code class="name">var <span class="ident">CLEANING</span></code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumMode.DOCKED"><code class="name">var <span class="ident">DOCKED</span></code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumMode.DOCKING"><code class="name">var <span class="ident">DOCKING</span></code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumMode.EXPLORING"><code class="name">var <span class="ident">EXPLORING</span></code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumMode.IDLE"><code class="name">var <span class="ident">IDLE</span></code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumMode.RETURNING_TO_DOCK"><code class="name">var <span class="ident">RETURNING_TO_DOCK</span></code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumMode.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.VacuumStatus"><code class="flex name class">
+<span>class <span class="ident">VacuumStatus</span></span>
+<span>(</span><span>mode: <a title="sharklocal.VacuumMode" href="#sharklocal.VacuumMode">VacuumMode</a>,<br>battery_level: Optional[int] = None,<br>charging: Optional[bool] = None,<br>raw: Dict[str, Any] = &lt;factory&gt;)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class VacuumStatus:
+    &#34;&#34;&#34;Normalized vacuum status, independent of transport protocol.&#34;&#34;&#34;
+
+    mode: VacuumMode
+    battery_level: Optional[int] = None
+    charging: Optional[bool] = None
+    raw: Dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def is_cleaning(self) -&gt; bool:
+        return self.mode == VacuumMode.CLEANING
+
+    @property
+    def is_docked(self) -&gt; bool:
+        return self.mode in (VacuumMode.DOCKED, VacuumMode.DOCKING)</code></pre>
+</details>
+<div class="desc"><p>Normalized vacuum status, independent of transport protocol.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.VacuumStatus.battery_level"><code class="name">var <span class="ident">battery_level</span> : int | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumStatus.charging"><code class="name">var <span class="ident">charging</span> : bool | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumStatus.is_cleaning"><code class="name">prop <span class="ident">is_cleaning</span> : bool</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def is_cleaning(self) -&gt; bool:
+    return self.mode == VacuumMode.CLEANING</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="sharklocal.VacuumStatus.is_docked"><code class="name">prop <span class="ident">is_docked</span> : bool</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def is_docked(self) -&gt; bool:
+    return self.mode in (VacuumMode.DOCKED, VacuumMode.DOCKING)</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="sharklocal.VacuumStatus.mode"><code class="name">var <span class="ident">mode</span> : <a title="sharklocal.models.VacuumMode" href="models.html#sharklocal.models.VacuumMode">VacuumMode</a></code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.VacuumStatus.raw"><code class="name">var <span class="ident">raw</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="sharklocal.client" href="client.html">sharklocal.client</a></code></li>
+<li><code><a title="sharklocal.exceptions" href="exceptions.html">sharklocal.exceptions</a></code></li>
+<li><code><a title="sharklocal.mappings" href="mappings/index.html">sharklocal.mappings</a></code></li>
+<li><code><a title="sharklocal.models" href="models.html">sharklocal.models</a></code></li>
+<li><code><a title="sharklocal.mqtt_client" href="mqtt_client.html">sharklocal.mqtt_client</a></code></li>
+<li><code><a title="sharklocal.protobuf" href="protobuf.html">sharklocal.protobuf</a></code></li>
+<li><code><a title="sharklocal.rest_client" href="rest_client.html">sharklocal.rest_client</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="sharklocal.list_mqtt_mappings" href="#sharklocal.list_mqtt_mappings">list_mqtt_mappings</a></code></li>
+<li><code><a title="sharklocal.list_rest_mappings" href="#sharklocal.list_rest_mappings">list_rest_mappings</a></code></li>
+<li><code><a title="sharklocal.load_mqtt_mapping" href="#sharklocal.load_mqtt_mapping">load_mqtt_mapping</a></code></li>
+<li><code><a title="sharklocal.load_rest_mapping" href="#sharklocal.load_rest_mapping">load_rest_mapping</a></code></li>
+<li><code><a title="sharklocal.register_decoder" href="#sharklocal.register_decoder">register_decoder</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="sharklocal.ActionNotSupportedError" href="#sharklocal.ActionNotSupportedError">ActionNotSupportedError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="sharklocal.CommandError" href="#sharklocal.CommandError">CommandError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="sharklocal.ConnectError" href="#sharklocal.ConnectError">ConnectError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="sharklocal.DecoderError" href="#sharklocal.DecoderError">DecoderError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="sharklocal.DeviceInfo" href="#sharklocal.DeviceInfo">DeviceInfo</a></code></h4>
+<ul class="two-column">
+<li><code><a title="sharklocal.DeviceInfo.firmware" href="#sharklocal.DeviceInfo.firmware">firmware</a></code></li>
+<li><code><a title="sharklocal.DeviceInfo.ip_address" href="#sharklocal.DeviceInfo.ip_address">ip_address</a></code></li>
+<li><code><a title="sharklocal.DeviceInfo.mac_address" href="#sharklocal.DeviceInfo.mac_address">mac_address</a></code></li>
+<li><code><a title="sharklocal.DeviceInfo.raw" href="#sharklocal.DeviceInfo.raw">raw</a></code></li>
+<li><code><a title="sharklocal.DeviceInfo.rssi" href="#sharklocal.DeviceInfo.rssi">rssi</a></code></li>
+<li><code><a title="sharklocal.DeviceInfo.ssid" href="#sharklocal.DeviceInfo.ssid">ssid</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.MQTTVacuumClient" href="#sharklocal.MQTTVacuumClient">MQTTVacuumClient</a></code></h4>
+<ul class="">
+<li><code><a title="sharklocal.MQTTVacuumClient.call" href="#sharklocal.MQTTVacuumClient.call">call</a></code></li>
+<li><code><a title="sharklocal.MQTTVacuumClient.monitor" href="#sharklocal.MQTTVacuumClient.monitor">monitor</a></code></li>
+<li><code><a title="sharklocal.MQTTVacuumClient.supports" href="#sharklocal.MQTTVacuumClient.supports">supports</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.MappingNotFoundError" href="#sharklocal.MappingNotFoundError">MappingNotFoundError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="sharklocal.ProbeResult" href="#sharklocal.ProbeResult">ProbeResult</a></code></h4>
+<ul class="">
+<li><code><a title="sharklocal.ProbeResult.has_mqtt" href="#sharklocal.ProbeResult.has_mqtt">has_mqtt</a></code></li>
+<li><code><a title="sharklocal.ProbeResult.has_rest" href="#sharklocal.ProbeResult.has_rest">has_rest</a></code></li>
+<li><code><a title="sharklocal.ProbeResult.is_connected" href="#sharklocal.ProbeResult.is_connected">is_connected</a></code></li>
+<li><code><a title="sharklocal.ProbeResult.mqtt_mapping" href="#sharklocal.ProbeResult.mqtt_mapping">mqtt_mapping</a></code></li>
+<li><code><a title="sharklocal.ProbeResult.rest_mapping" href="#sharklocal.ProbeResult.rest_mapping">rest_mapping</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.RESTVacuumClient" href="#sharklocal.RESTVacuumClient">RESTVacuumClient</a></code></h4>
+<ul class="">
+<li><code><a title="sharklocal.RESTVacuumClient.base_url" href="#sharklocal.RESTVacuumClient.base_url">base_url</a></code></li>
+<li><code><a title="sharklocal.RESTVacuumClient.call" href="#sharklocal.RESTVacuumClient.call">call</a></code></li>
+<li><code><a title="sharklocal.RESTVacuumClient.close" href="#sharklocal.RESTVacuumClient.close">close</a></code></li>
+<li><code><a title="sharklocal.RESTVacuumClient.supports" href="#sharklocal.RESTVacuumClient.supports">supports</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.SharklocalError" href="#sharklocal.SharklocalError">SharklocalError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="sharklocal.VacuumClient" href="#sharklocal.VacuumClient">VacuumClient</a></code></h4>
+<ul class="two-column">
+<li><code><a title="sharklocal.VacuumClient.active_mqtt_mapping" href="#sharklocal.VacuumClient.active_mqtt_mapping">active_mqtt_mapping</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.active_rest_mapping" href="#sharklocal.VacuumClient.active_rest_mapping">active_rest_mapping</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.close" href="#sharklocal.VacuumClient.close">close</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.explore" href="#sharklocal.VacuumClient.explore">explore</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.get_device_info" href="#sharklocal.VacuumClient.get_device_info">get_device_info</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.get_events" href="#sharklocal.VacuumClient.get_events">get_events</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.get_status" href="#sharklocal.VacuumClient.get_status">get_status</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.get_wifi_status" href="#sharklocal.VacuumClient.get_wifi_status">get_wifi_status</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.go_home" href="#sharklocal.VacuumClient.go_home">go_home</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.on_status_update" href="#sharklocal.VacuumClient.on_status_update">on_status_update</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.probe" href="#sharklocal.VacuumClient.probe">probe</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.start_cleaning" href="#sharklocal.VacuumClient.start_cleaning">start_cleaning</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.start_monitoring" href="#sharklocal.VacuumClient.start_monitoring">start_monitoring</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.stop" href="#sharklocal.VacuumClient.stop">stop</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.stop_monitoring" href="#sharklocal.VacuumClient.stop_monitoring">stop_monitoring</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.supported_actions" href="#sharklocal.VacuumClient.supported_actions">supported_actions</a></code></li>
+<li><code><a title="sharklocal.VacuumClient.transports_for" href="#sharklocal.VacuumClient.transports_for">transports_for</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.VacuumEvent" href="#sharklocal.VacuumEvent">VacuumEvent</a></code></h4>
+<ul class="two-column">
+<li><code><a title="sharklocal.VacuumEvent.current_status" href="#sharklocal.VacuumEvent.current_status">current_status</a></code></li>
+<li><code><a title="sharklocal.VacuumEvent.id" href="#sharklocal.VacuumEvent.id">id</a></code></li>
+<li><code><a title="sharklocal.VacuumEvent.raw" href="#sharklocal.VacuumEvent.raw">raw</a></code></li>
+<li><code><a title="sharklocal.VacuumEvent.source_type" href="#sharklocal.VacuumEvent.source_type">source_type</a></code></li>
+<li><code><a title="sharklocal.VacuumEvent.timestamp" href="#sharklocal.VacuumEvent.timestamp">timestamp</a></code></li>
+<li><code><a title="sharklocal.VacuumEvent.type" href="#sharklocal.VacuumEvent.type">type</a></code></li>
+<li><code><a title="sharklocal.VacuumEvent.type_id" href="#sharklocal.VacuumEvent.type_id">type_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.VacuumMode" href="#sharklocal.VacuumMode">VacuumMode</a></code></h4>
+<ul class="two-column">
+<li><code><a title="sharklocal.VacuumMode.CLEANING" href="#sharklocal.VacuumMode.CLEANING">CLEANING</a></code></li>
+<li><code><a title="sharklocal.VacuumMode.DOCKED" href="#sharklocal.VacuumMode.DOCKED">DOCKED</a></code></li>
+<li><code><a title="sharklocal.VacuumMode.DOCKING" href="#sharklocal.VacuumMode.DOCKING">DOCKING</a></code></li>
+<li><code><a title="sharklocal.VacuumMode.EXPLORING" href="#sharklocal.VacuumMode.EXPLORING">EXPLORING</a></code></li>
+<li><code><a title="sharklocal.VacuumMode.IDLE" href="#sharklocal.VacuumMode.IDLE">IDLE</a></code></li>
+<li><code><a title="sharklocal.VacuumMode.RETURNING_TO_DOCK" href="#sharklocal.VacuumMode.RETURNING_TO_DOCK">RETURNING_TO_DOCK</a></code></li>
+<li><code><a title="sharklocal.VacuumMode.UNKNOWN" href="#sharklocal.VacuumMode.UNKNOWN">UNKNOWN</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.VacuumStatus" href="#sharklocal.VacuumStatus">VacuumStatus</a></code></h4>
+<ul class="two-column">
+<li><code><a title="sharklocal.VacuumStatus.battery_level" href="#sharklocal.VacuumStatus.battery_level">battery_level</a></code></li>
+<li><code><a title="sharklocal.VacuumStatus.charging" href="#sharklocal.VacuumStatus.charging">charging</a></code></li>
+<li><code><a title="sharklocal.VacuumStatus.is_cleaning" href="#sharklocal.VacuumStatus.is_cleaning">is_cleaning</a></code></li>
+<li><code><a title="sharklocal.VacuumStatus.is_docked" href="#sharklocal.VacuumStatus.is_docked">is_docked</a></code></li>
+<li><code><a title="sharklocal.VacuumStatus.mode" href="#sharklocal.VacuumStatus.mode">mode</a></code></li>
+<li><code><a title="sharklocal.VacuumStatus.raw" href="#sharklocal.VacuumStatus.raw">raw</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

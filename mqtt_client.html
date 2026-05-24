@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>sharklocal.mqtt_client API documentation</title>
+<meta name="description" content="Async MQTT client for local vacuum control.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>sharklocal.mqtt_client</code></h1>
+</header>
+<section id="section-intro">
+<p>Async MQTT client for local vacuum control.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="sharklocal.mqtt_client.register_decoder"><code class="name flex">
+<span>def <span class="ident">register_decoder</span></span>(<span>name: str) ‑> Callable</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_decoder(name: str) -&gt; Callable:
+    &#34;&#34;&#34;Decorator to register a named MQTT status decoder function.
+
+    Usage::
+
+        @register_decoder(&#34;my_model_v1&#34;)
+        def _decode_my_model(payload: bytes, modes: Dict[int, str]) -&gt; VacuumStatus:
+            ...
+    &#34;&#34;&#34;
+
+    def decorator(fn: Callable) -&gt; Callable:
+        _STATUS_DECODERS[name] = fn
+        return fn
+
+    return decorator</code></pre>
+</details>
+<div class="desc"><p>Decorator to register a named MQTT status decoder function.</p>
+<p>Usage::</p>
+<pre><code>@register_decoder("my_model_v1")
+def _decode_my_model(payload: bytes, modes: Dict[int, str]) -&gt; VacuumStatus:
+    ...
+</code></pre></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="sharklocal.mqtt_client.MQTTVacuumClient"><code class="flex name class">
+<span>class <span class="ident">MQTTVacuumClient</span></span>
+<span>(</span><span>host: str, mapping: MQTTMappingConfig)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MQTTVacuumClient:
+    &#34;&#34;&#34;Async MQTT client for local vacuum control.
+
+    Requires ``aiomqtt`` (``pip install aiomqtt``).
+    &#34;&#34;&#34;
+
+    def __init__(self, host: str, mapping: MQTTMappingConfig) -&gt; None:
+        self.host = host
+        self.mapping = mapping
+
+    def supports(self, action: str) -&gt; bool:
+        &#34;&#34;&#34;Return ``True`` if the mapping defines *action*.&#34;&#34;&#34;
+        return action in self.mapping.actions
+
+    def _decode_incoming(self, raw_payload: bytes) -&gt; bytes:
+        &#34;&#34;&#34;Decode a received MQTT payload per the mapping&#39;s encoding setting.&#34;&#34;&#34;
+        if self.mapping.encoding == &#34;base64&#34;:
+            return base64.b64decode(raw_payload)
+        return raw_payload
+
+    def _decode_status(self, raw_payload: bytes) -&gt; VacuumStatus:
+        &#34;&#34;&#34;Decode a raw MQTT payload into a normalized ``VacuumStatus``.&#34;&#34;&#34;
+        decoder = _STATUS_DECODERS.get(self.mapping.status_decoder)
+        if decoder is None:
+            raise DecoderError(
+                f&#34;No decoder registered for &#39;{self.mapping.status_decoder}&#39;. &#34;
+                f&#34;Available decoders: {list(_STATUS_DECODERS)}&#34;
+            )
+        payload = self._decode_incoming(raw_payload)
+        return decoder(payload, self.mapping.modes)
+
+    async def call(self, action: str) -&gt; Any:
+        &#34;&#34;&#34;Execute a named action from the mapping.
+
+        Args:
+            action: Action name as defined in the mapping (e.g. ``&#34;start_cleaning&#34;``).
+
+        Returns:
+            ``True`` for ``command`` actions, or a ``VacuumStatus`` for
+            ``status_request`` actions.
+
+        Raises:
+            ActionNotSupportedError: If *action* is not in the mapping.
+            ConnectError: If the MQTT broker cannot be reached.
+            CommandError: If a status response is not received within the timeout.
+        &#34;&#34;&#34;
+        if not self.supports(action):
+            raise ActionNotSupportedError(
+                f&#34;MQTT mapping &#39;{self.mapping.id}&#39; does not support &#39;{action}&#39;&#34;
+            )
+
+        spec = self.mapping.actions[action]
+
+        try:
+            import aiomqtt
+        except ImportError as exc:
+            raise ConnectError(
+                &#34;aiomqtt is required for MQTT support. &#34;
+                &#34;Install with: pip install aiomqtt&#34;
+            ) from exc
+
+        try:
+            if spec.type == &#34;command&#34;:
+                async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+                    await client.publish(self.mapping.command_topic, payload=spec.payload)
+                return True
+
+            if spec.type == &#34;status_request&#34;:
+                return await self._request_status(spec.payload, spec.timeout)
+
+        except (ActionNotSupportedError, CommandError, ConnectError, DecoderError):
+            raise
+        except Exception as exc:
+            raise ConnectError(
+                f&#34;MQTT error connecting to {self.host}:{self.mapping.port}: {exc}&#34;
+            ) from exc
+
+        raise CommandError(f&#34;Unrecognised MQTT action type &#39;{spec.type}&#39;&#34;)
+
+    async def _request_status(self, command_payload: str, timeout: float) -&gt; VacuumStatus:
+        &#34;&#34;&#34;Publish a status-request command and return the decoded first response.&#34;&#34;&#34;
+        try:
+            import aiomqtt
+        except ImportError as exc:
+            raise ConnectError(&#34;aiomqtt is required for MQTT support&#34;) from exc
+
+        async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+            await client.subscribe(self.mapping.status_topic)
+            await client.publish(self.mapping.command_topic, payload=command_payload)
+            try:
+                async with asyncio.timeout(timeout):
+                    async for message in client.messages:
+                        return self._decode_status(bytes(message.payload))
+            except TimeoutError:
+                raise CommandError(
+                    f&#34;Timed out after {timeout}s waiting for MQTT status response&#34;
+                )
+
+        raise CommandError(&#34;No status message received from vacuum&#34;)
+
+    async def monitor(
+        self,
+        callback: Callable[[VacuumStatus], None],
+        *,
+        stop_event: Optional[asyncio.Event] = None,
+    ) -&gt; None:
+        &#34;&#34;&#34;Subscribe to the vacuum&#39;s status topic and invoke *callback* per update.
+
+        Runs indefinitely until *stop_event* is set or the task is cancelled.
+        Both synchronous and ``async`` callbacks are supported.
+
+        Args:
+            callback: Called with each decoded ``VacuumStatus``.
+            stop_event: Optional ``asyncio.Event``; when set, monitoring stops
+                cleanly after the current message.
+        &#34;&#34;&#34;
+        try:
+            import aiomqtt
+        except ImportError as exc:
+            raise ConnectError(&#34;aiomqtt is required for MQTT support&#34;) from exc
+
+        try:
+            async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+                await client.subscribe(self.mapping.status_topic)
+                async for message in client.messages:
+                    if stop_event and stop_event.is_set():
+                        return
+                    try:
+                        status = self._decode_status(bytes(message.payload))
+                    except (DecoderError, CommandError):
+                        continue  # Skip malformed messages silently
+                    if asyncio.iscoroutinefunction(callback):
+                        await callback(status)
+                    else:
+                        callback(status)
+
+        except (ActionNotSupportedError, CommandError, ConnectError, DecoderError):
+            raise
+        except Exception as exc:
+            raise ConnectError(
+                f&#34;MQTT monitor lost connection to {self.host}: {exc}&#34;
+            ) from exc</code></pre>
+</details>
+<div class="desc"><p>Async MQTT client for local vacuum control.</p>
+<p>Requires <code>aiomqtt</code> (<code>pip install aiomqtt</code>).</p></div>
+<h3>Methods</h3>
+<dl>
+<dt id="sharklocal.mqtt_client.MQTTVacuumClient.call"><code class="name flex">
+<span>async def <span class="ident">call</span></span>(<span>self, action: str) ‑> Any</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def call(self, action: str) -&gt; Any:
+    &#34;&#34;&#34;Execute a named action from the mapping.
+
+    Args:
+        action: Action name as defined in the mapping (e.g. ``&#34;start_cleaning&#34;``).
+
+    Returns:
+        ``True`` for ``command`` actions, or a ``VacuumStatus`` for
+        ``status_request`` actions.
+
+    Raises:
+        ActionNotSupportedError: If *action* is not in the mapping.
+        ConnectError: If the MQTT broker cannot be reached.
+        CommandError: If a status response is not received within the timeout.
+    &#34;&#34;&#34;
+    if not self.supports(action):
+        raise ActionNotSupportedError(
+            f&#34;MQTT mapping &#39;{self.mapping.id}&#39; does not support &#39;{action}&#39;&#34;
+        )
+
+    spec = self.mapping.actions[action]
+
+    try:
+        import aiomqtt
+    except ImportError as exc:
+        raise ConnectError(
+            &#34;aiomqtt is required for MQTT support. &#34;
+            &#34;Install with: pip install aiomqtt&#34;
+        ) from exc
+
+    try:
+        if spec.type == &#34;command&#34;:
+            async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+                await client.publish(self.mapping.command_topic, payload=spec.payload)
+            return True
+
+        if spec.type == &#34;status_request&#34;:
+            return await self._request_status(spec.payload, spec.timeout)
+
+    except (ActionNotSupportedError, CommandError, ConnectError, DecoderError):
+        raise
+    except Exception as exc:
+        raise ConnectError(
+            f&#34;MQTT error connecting to {self.host}:{self.mapping.port}: {exc}&#34;
+        ) from exc
+
+    raise CommandError(f&#34;Unrecognised MQTT action type &#39;{spec.type}&#39;&#34;)</code></pre>
+</details>
+<div class="desc"><p>Execute a named action from the mapping.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>action</code></strong></dt>
+<dd>Action name as defined in the mapping (e.g. <code>"start_cleaning"</code>).</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>True</code> for <code>command</code> actions, or a <code>VacuumStatus</code> for
+<code>status_request</code> actions.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ActionNotSupportedError</code></dt>
+<dd>If <em>action</em> is not in the mapping.</dd>
+<dt><code>ConnectError</code></dt>
+<dd>If the MQTT broker cannot be reached.</dd>
+<dt><code>CommandError</code></dt>
+<dd>If a status response is not received within the timeout.</dd>
+</dl></div>
+</dd>
+<dt id="sharklocal.mqtt_client.MQTTVacuumClient.monitor"><code class="name flex">
+<span>async def <span class="ident">monitor</span></span>(<span>self,<br>callback: Callable[[VacuumStatus], None],<br>*,<br>stop_event: Optional[asyncio.Event] = None) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def monitor(
+    self,
+    callback: Callable[[VacuumStatus], None],
+    *,
+    stop_event: Optional[asyncio.Event] = None,
+) -&gt; None:
+    &#34;&#34;&#34;Subscribe to the vacuum&#39;s status topic and invoke *callback* per update.
+
+    Runs indefinitely until *stop_event* is set or the task is cancelled.
+    Both synchronous and ``async`` callbacks are supported.
+
+    Args:
+        callback: Called with each decoded ``VacuumStatus``.
+        stop_event: Optional ``asyncio.Event``; when set, monitoring stops
+            cleanly after the current message.
+    &#34;&#34;&#34;
+    try:
+        import aiomqtt
+    except ImportError as exc:
+        raise ConnectError(&#34;aiomqtt is required for MQTT support&#34;) from exc
+
+    try:
+        async with aiomqtt.Client(self.host, port=self.mapping.port) as client:
+            await client.subscribe(self.mapping.status_topic)
+            async for message in client.messages:
+                if stop_event and stop_event.is_set():
+                    return
+                try:
+                    status = self._decode_status(bytes(message.payload))
+                except (DecoderError, CommandError):
+                    continue  # Skip malformed messages silently
+                if asyncio.iscoroutinefunction(callback):
+                    await callback(status)
+                else:
+                    callback(status)
+
+    except (ActionNotSupportedError, CommandError, ConnectError, DecoderError):
+        raise
+    except Exception as exc:
+        raise ConnectError(
+            f&#34;MQTT monitor lost connection to {self.host}: {exc}&#34;
+        ) from exc</code></pre>
+</details>
+<div class="desc"><p>Subscribe to the vacuum's status topic and invoke <em>callback</em> per update.</p>
+<p>Runs indefinitely until <em>stop_event</em> is set or the task is cancelled.
+Both synchronous and <code>async</code> callbacks are supported.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>callback</code></strong></dt>
+<dd>Called with each decoded <code>VacuumStatus</code>.</dd>
+<dt><strong><code>stop_event</code></strong></dt>
+<dd>Optional <code>asyncio.Event</code>; when set, monitoring stops
+cleanly after the current message.</dd>
+</dl></div>
+</dd>
+<dt id="sharklocal.mqtt_client.MQTTVacuumClient.supports"><code class="name flex">
+<span>def <span class="ident">supports</span></span>(<span>self, action: str) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def supports(self, action: str) -&gt; bool:
+    &#34;&#34;&#34;Return ``True`` if the mapping defines *action*.&#34;&#34;&#34;
+    return action in self.mapping.actions</code></pre>
+</details>
+<div class="desc"><p>Return <code>True</code> if the mapping defines <em>action</em>.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="sharklocal" href="index.html">sharklocal</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="sharklocal.mqtt_client.register_decoder" href="#sharklocal.mqtt_client.register_decoder">register_decoder</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="sharklocal.mqtt_client.MQTTVacuumClient" href="#sharklocal.mqtt_client.MQTTVacuumClient">MQTTVacuumClient</a></code></h4>
+<ul class="">
+<li><code><a title="sharklocal.mqtt_client.MQTTVacuumClient.call" href="#sharklocal.mqtt_client.MQTTVacuumClient.call">call</a></code></li>
+<li><code><a title="sharklocal.mqtt_client.MQTTVacuumClient.monitor" href="#sharklocal.mqtt_client.MQTTVacuumClient.monitor">monitor</a></code></li>
+<li><code><a title="sharklocal.mqtt_client.MQTTVacuumClient.supports" href="#sharklocal.mqtt_client.MQTTVacuumClient.supports">supports</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

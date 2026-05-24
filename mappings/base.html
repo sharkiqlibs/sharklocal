@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>sharklocal.mappings.base API documentation</title>
+<meta name="description" content="Base dataclasses for REST and MQTT mapping configurations.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>sharklocal.mappings.base</code></h1>
+</header>
+<section id="section-intro">
+<p>Base dataclasses for REST and MQTT mapping configurations.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="sharklocal.mappings.base.MQTTActionSpec"><code class="flex name class">
+<span>class <span class="ident">MQTTActionSpec</span></span>
+<span>(</span><span>type: str, payload: str, timeout: float = 5.0)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class MQTTActionSpec:
+    &#34;&#34;&#34;Specification for a single MQTT action.&#34;&#34;&#34;
+
+    type: str  # &#34;command&#34; or &#34;status_request&#34;
+    payload: str
+    timeout: float = 5.0</code></pre>
+</details>
+<div class="desc"><p>Specification for a single MQTT action.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.mappings.base.MQTTActionSpec.payload"><code class="name">var <span class="ident">payload</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTActionSpec.timeout"><code class="name">var <span class="ident">timeout</span> : float</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTActionSpec.type"><code class="name">var <span class="ident">type</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig"><code class="flex name class">
+<span>class <span class="ident">MQTTMappingConfig</span></span>
+<span>(</span><span>id: str,<br>description: str,<br>port: int,<br>command_topic: str,<br>status_topic: str,<br>encoding: str,<br>status_decoder: str,<br>actions: Dict[str, <a title="sharklocal.mappings.base.MQTTActionSpec" href="#sharklocal.mappings.base.MQTTActionSpec">MQTTActionSpec</a>],<br>modes: Dict[int, str])</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class MQTTMappingConfig:
+    &#34;&#34;&#34;Full configuration for an MQTT transport mapping.&#34;&#34;&#34;
+
+    id: str
+    description: str
+    port: int
+    command_topic: str
+    status_topic: str
+    encoding: str
+    status_decoder: str
+    actions: Dict[str, MQTTActionSpec]
+    modes: Dict[int, str]
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -&gt; MQTTMappingConfig:
+        actions = {
+            name: MQTTActionSpec(
+                type=spec[&#34;type&#34;],
+                payload=spec[&#34;payload&#34;],
+                timeout=float(spec.get(&#34;timeout&#34;, 5.0)),
+            )
+            for name, spec in data.get(&#34;actions&#34;, {}).items()
+        }
+        conn = data.get(&#34;connection&#34;, {})
+        topics = data.get(&#34;topics&#34;, {})
+        modes = {int(k): v for k, v in data.get(&#34;modes&#34;, {}).items()}
+        return cls(
+            id=data[&#34;id&#34;],
+            description=data.get(&#34;description&#34;, &#34;&#34;),
+            port=conn.get(&#34;port&#34;, 1883),
+            command_topic=topics.get(&#34;command&#34;, &#34;/qfeel/PbInput&#34;),
+            status_topic=topics.get(&#34;status&#34;, &#34;/qfeel/PbOutput&#34;),
+            encoding=data.get(&#34;encoding&#34;, &#34;base64&#34;),
+            status_decoder=data.get(&#34;status_decoder&#34;, &#34;&#34;),
+            actions=actions,
+            modes=modes,
+        )</code></pre>
+</details>
+<div class="desc"><p>Full configuration for an MQTT transport mapping.</p></div>
+<h3>Static methods</h3>
+<dl>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>data: Dict[str, Any]) ‑> <a title="sharklocal.mappings.base.MQTTMappingConfig" href="#sharklocal.mappings.base.MQTTMappingConfig">MQTTMappingConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.actions"><code class="name">var <span class="ident">actions</span> : Dict[str, <a title="sharklocal.mappings.base.MQTTActionSpec" href="#sharklocal.mappings.base.MQTTActionSpec">MQTTActionSpec</a>]</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.command_topic"><code class="name">var <span class="ident">command_topic</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.encoding"><code class="name">var <span class="ident">encoding</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.id"><code class="name">var <span class="ident">id</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.modes"><code class="name">var <span class="ident">modes</span> : Dict[int, str]</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.port"><code class="name">var <span class="ident">port</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.status_decoder"><code class="name">var <span class="ident">status_decoder</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.status_topic"><code class="name">var <span class="ident">status_topic</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.mappings.base.RESTActionSpec"><code class="flex name class">
+<span>class <span class="ident">RESTActionSpec</span></span>
+<span>(</span><span>method: str,<br>path: str,<br>response_map: Optional[str] = None,<br>body: Optional[Dict[str, Any]] = None,<br>headers: Optional[Dict[str, str]] = None)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class RESTActionSpec:
+    &#34;&#34;&#34;Specification for a single REST action.&#34;&#34;&#34;
+
+    method: str
+    path: str
+    response_map: Optional[str] = None
+    body: Optional[Dict[str, Any]] = None
+    headers: Optional[Dict[str, str]] = None</code></pre>
+</details>
+<div class="desc"><p>Specification for a single REST action.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.mappings.base.RESTActionSpec.body"><code class="name">var <span class="ident">body</span> : Dict[str, Any] | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTActionSpec.headers"><code class="name">var <span class="ident">headers</span> : Dict[str, str] | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTActionSpec.method"><code class="name">var <span class="ident">method</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTActionSpec.path"><code class="name">var <span class="ident">path</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTActionSpec.response_map"><code class="name">var <span class="ident">response_map</span> : str | None</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="sharklocal.mappings.base.RESTMappingConfig"><code class="flex name class">
+<span>class <span class="ident">RESTMappingConfig</span></span>
+<span>(</span><span>id: str,<br>description: str,<br>transport: str,<br>port: int,<br>verify_ssl: bool,<br>actions: Dict[str, <a title="sharklocal.mappings.base.RESTActionSpec" href="#sharklocal.mappings.base.RESTActionSpec">RESTActionSpec</a>],<br>mode_map: Dict[str, str] = &lt;factory&gt;)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class RESTMappingConfig:
+    &#34;&#34;&#34;Full configuration for a REST transport mapping.&#34;&#34;&#34;
+
+    id: str
+    description: str
+    transport: str  # &#34;http&#34; or &#34;https&#34;
+    port: int
+    verify_ssl: bool
+    actions: Dict[str, RESTActionSpec]
+    mode_map: Dict[str, str] = field(default_factory=dict)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -&gt; RESTMappingConfig:
+        actions = {
+            name: RESTActionSpec(
+                method=spec[&#34;method&#34;],
+                path=spec[&#34;path&#34;],
+                response_map=spec.get(&#34;response_map&#34;),
+                body=spec.get(&#34;body&#34;),
+                headers=spec.get(&#34;headers&#34;),
+            )
+            for name, spec in data.get(&#34;actions&#34;, {}).items()
+        }
+        conn = data.get(&#34;connection&#34;, {})
+        return cls(
+            id=data[&#34;id&#34;],
+            description=data.get(&#34;description&#34;, &#34;&#34;),
+            transport=data.get(&#34;transport&#34;, &#34;https&#34;),
+            port=conn.get(&#34;port&#34;, 443),
+            verify_ssl=conn.get(&#34;verify_ssl&#34;, True),
+            actions=actions,
+            mode_map=data.get(&#34;mode_map&#34;, {}),
+        )</code></pre>
+</details>
+<div class="desc"><p>Full configuration for a REST transport mapping.</p></div>
+<h3>Static methods</h3>
+<dl>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>data: Dict[str, Any]) ‑> <a title="sharklocal.mappings.base.RESTMappingConfig" href="#sharklocal.mappings.base.RESTMappingConfig">RESTMappingConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.actions"><code class="name">var <span class="ident">actions</span> : Dict[str, <a title="sharklocal.mappings.base.RESTActionSpec" href="#sharklocal.mappings.base.RESTActionSpec">RESTActionSpec</a>]</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.id"><code class="name">var <span class="ident">id</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.mode_map"><code class="name">var <span class="ident">mode_map</span> : Dict[str, str]</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.port"><code class="name">var <span class="ident">port</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.transport"><code class="name">var <span class="ident">transport</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.verify_ssl"><code class="name">var <span class="ident">verify_ssl</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="sharklocal.mappings" href="index.html">sharklocal.mappings</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="sharklocal.mappings.base.MQTTActionSpec" href="#sharklocal.mappings.base.MQTTActionSpec">MQTTActionSpec</a></code></h4>
+<ul class="">
+<li><code><a title="sharklocal.mappings.base.MQTTActionSpec.payload" href="#sharklocal.mappings.base.MQTTActionSpec.payload">payload</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTActionSpec.timeout" href="#sharklocal.mappings.base.MQTTActionSpec.timeout">timeout</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTActionSpec.type" href="#sharklocal.mappings.base.MQTTActionSpec.type">type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.mappings.base.MQTTMappingConfig" href="#sharklocal.mappings.base.MQTTMappingConfig">MQTTMappingConfig</a></code></h4>
+<ul class="two-column">
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.actions" href="#sharklocal.mappings.base.MQTTMappingConfig.actions">actions</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.command_topic" href="#sharklocal.mappings.base.MQTTMappingConfig.command_topic">command_topic</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.description" href="#sharklocal.mappings.base.MQTTMappingConfig.description">description</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.encoding" href="#sharklocal.mappings.base.MQTTMappingConfig.encoding">encoding</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.from_dict" href="#sharklocal.mappings.base.MQTTMappingConfig.from_dict">from_dict</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.id" href="#sharklocal.mappings.base.MQTTMappingConfig.id">id</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.modes" href="#sharklocal.mappings.base.MQTTMappingConfig.modes">modes</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.port" href="#sharklocal.mappings.base.MQTTMappingConfig.port">port</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.status_decoder" href="#sharklocal.mappings.base.MQTTMappingConfig.status_decoder">status_decoder</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.status_topic" href="#sharklocal.mappings.base.MQTTMappingConfig.status_topic">status_topic</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.mappings.base.RESTActionSpec" href="#sharklocal.mappings.base.RESTActionSpec">RESTActionSpec</a></code></h4>
+<ul class="">
+<li><code><a title="sharklocal.mappings.base.RESTActionSpec.body" href="#sharklocal.mappings.base.RESTActionSpec.body">body</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTActionSpec.headers" href="#sharklocal.mappings.base.RESTActionSpec.headers">headers</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTActionSpec.method" href="#sharklocal.mappings.base.RESTActionSpec.method">method</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTActionSpec.path" href="#sharklocal.mappings.base.RESTActionSpec.path">path</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTActionSpec.response_map" href="#sharklocal.mappings.base.RESTActionSpec.response_map">response_map</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sharklocal.mappings.base.RESTMappingConfig" href="#sharklocal.mappings.base.RESTMappingConfig">RESTMappingConfig</a></code></h4>
+<ul class="two-column">
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.actions" href="#sharklocal.mappings.base.RESTMappingConfig.actions">actions</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.description" href="#sharklocal.mappings.base.RESTMappingConfig.description">description</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.from_dict" href="#sharklocal.mappings.base.RESTMappingConfig.from_dict">from_dict</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.id" href="#sharklocal.mappings.base.RESTMappingConfig.id">id</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.mode_map" href="#sharklocal.mappings.base.RESTMappingConfig.mode_map">mode_map</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.port" href="#sharklocal.mappings.base.RESTMappingConfig.port">port</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.transport" href="#sharklocal.mappings.base.RESTMappingConfig.transport">transport</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.verify_ssl" href="#sharklocal.mappings.base.RESTMappingConfig.verify_ssl">verify_ssl</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>
