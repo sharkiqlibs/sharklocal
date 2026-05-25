@@ -224,3 +224,46 @@ def test_mqtt_mapping_from_dict_defaults_when_keys_absent():
     assert cfg.encoding == "base64"
     assert cfg.modes == {}
     assert cfg.description == ""
+
+
+# ---------------------------------------------------------------------------
+# priority field
+# ---------------------------------------------------------------------------
+
+
+def test_rest_mapping_priority_default_is_zero():
+    minimal = {"id": "test", "actions": {}}
+    cfg = RESTMappingConfig.from_dict(minimal)
+    assert cfg.priority == 0
+
+
+def test_rest_mapping_priority_parsed_from_dict():
+    data = dict(_REST_DICT, priority=20)
+    cfg = RESTMappingConfig.from_dict(data)
+    assert cfg.priority == 20
+
+
+def test_rest_mapping_priority_coerced_to_int():
+    data = dict(_REST_DICT, priority="15")
+    cfg = RESTMappingConfig.from_dict(data)
+    assert cfg.priority == 15
+    assert isinstance(cfg.priority, int)
+
+
+def test_mqtt_mapping_priority_default_is_zero():
+    minimal = {"id": "test", "actions": {}, "status_decoder": ""}
+    cfg = MQTTMappingConfig.from_dict(minimal)
+    assert cfg.priority == 0
+
+
+def test_mqtt_mapping_priority_parsed_from_dict():
+    data = dict(_MQTT_DICT, priority=30)
+    cfg = MQTTMappingConfig.from_dict(data)
+    assert cfg.priority == 30
+
+
+def test_mqtt_mapping_priority_coerced_to_int():
+    data = dict(_MQTT_DICT, priority="5")
+    cfg = MQTTMappingConfig.from_dict(data)
+    assert cfg.priority == 5
+    assert isinstance(cfg.priority, int)

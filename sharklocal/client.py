@@ -176,23 +176,31 @@ class VacuumClient:
         rest_id: Optional[str] = None
         mqtt_id: Optional[str] = None
 
+        best_rest: Optional[RESTVacuumClient] = None
         for client in self._rest_candidates:
             try:
                 await client.call("get_status")
-                self._rest = client
-                rest_id = client.mapping.id
-                break
+                if best_rest is None or client.mapping.priority > best_rest.mapping.priority:
+                    best_rest = client
             except SharklocalError:
                 continue
 
+        if best_rest is not None:
+            self._rest = best_rest
+            rest_id = best_rest.mapping.id
+
+        best_mqtt: Optional[MQTTVacuumClient] = None
         for client in self._mqtt_candidates:
             try:
                 await client.call("get_status")
-                self._mqtt = client
-                mqtt_id = client.mapping.id
-                break
+                if best_mqtt is None or client.mapping.priority > best_mqtt.mapping.priority:
+                    best_mqtt = client
             except SharklocalError:
                 continue
+
+        if best_mqtt is not None:
+            self._mqtt = best_mqtt
+            mqtt_id = best_mqtt.mapping.id
 
         if rest_id is not None:
             self.via = "REST"

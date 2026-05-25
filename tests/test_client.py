@@ -23,11 +23,12 @@ from sharklocal.models import DeviceInfo, ProbeResult, VacuumEvent, VacuumMode, 
 # ---------------------------------------------------------------------------
 
 
-def _make_rest_client_mock(action_result=None, raises=None, supports_actions=None):
+def _make_rest_client_mock(action_result=None, raises=None, supports_actions=None, priority=0):
     """Return a mock RESTVacuumClient."""
     mock = AsyncMock()
     mock.mapping = MagicMock()
     mock.mapping.id = "test_rest_v1"
+    mock.mapping.priority = priority
     _default_rest_actions = ["get_status", "start_cleaning", "stop", "go_home", "explore", "get_events", "get_robot_id", "get_wifi_status"]
     _actions = supports_actions if supports_actions is not None else _default_rest_actions
     mock.mapping.actions = {a: MagicMock() for a in _actions}
@@ -40,11 +41,12 @@ def _make_rest_client_mock(action_result=None, raises=None, supports_actions=Non
     return mock
 
 
-def _make_mqtt_client_mock(action_result=None, raises=None, supports_actions=None):
+def _make_mqtt_client_mock(action_result=None, raises=None, supports_actions=None, priority=0):
     """Return a mock MQTTVacuumClient."""
     mock = MagicMock()
     mock.mapping = MagicMock()
     mock.mapping.id = "test_mqtt_v1"
+    mock.mapping.priority = priority
     _default_mqtt_actions = ["get_status", "start_cleaning", "stop", "go_home"]
     _actions = supports_actions if supports_actions is not None else _default_mqtt_actions
     mock.mapping.actions = {a: MagicMock() for a in _actions}
@@ -289,6 +291,50 @@ async def test_probe_overwrites_previous_pin():
     rest_a.mapping.id = "test_rest_v1"
     result2 = await client.probe()
     assert result2.rest_mapping == "test_rest_v1"
+
+
+async def test_probe_selects_highest_priority_rest_mapping():
+    low = _make_rest_client_mock(action_result=VacuumStatus(mode=VacuumMode.DOCKED), priority=10)
+    low.mapping.id = "low_priority"
+    high = _make_rest_client_mock(action_result=VacuumStatus(mode=VacuumMode.DOCKED), priority=20)
+    high.mapping.id = "high_priority"
+
+    with patch("sharklocal.client.load_rest_mapping"), \
+         patch("sharklocal.client.RESTVacuumClient", side_effect=[low, high]):
+        client = VacuumClient("host", rest_mappings=["low", "high"])
+
+    result = await client.probe()
+    assert result.rest_mapping == "high_priority"
+    assert client._rest is high
+
+
+async def test_probe_selects_highest_priority_mqtt_mapping():
+    low = _make_mqtt_client_mock(action_result=VacuumStatus(mode=VacuumMode.DOCKED), priority=5)
+    low.mapping.id = "low_priority"
+    high = _make_mqtt_client_mock(action_result=VacuumStatus(mode=VacuumMode.DOCKED), priority=15)
+    high.mapping.id = "high_priority"
+
+    with patch("sharklocal.client.load_mqtt_mapping"), \
+         patch("sharklocal.client.MQTTVacuumClient", side_effect=[low, high]):
+        client = VacuumClient("host", mqtt_mappings=["low", "high"])
+
+    result = await client.probe()
+    assert result.mqtt_mapping == "high_priority"
+    assert client._mqtt is high
+
+
+async def test_probe_skips_failed_candidates_when_selecting_by_priority():
+    failing = _make_rest_client_mock(raises=ConnectError("unreachable"), priority=100)
+    failing.mapping.id = "high_but_fails"
+    working = _make_rest_client_mock(action_result=VacuumStatus(mode=VacuumMode.DOCKED), priority=10)
+    working.mapping.id = "low_but_works"
+
+    with patch("sharklocal.client.load_rest_mapping"), \
+         patch("sharklocal.client.RESTVacuumClient", side_effect=[failing, working]):
+        client = VacuumClient("host", rest_mappings=["high", "low"])
+
+    result = await client.probe()
+    assert result.rest_mapping == "low_but_works"
 
 
 # ---------------------------------------------------------------------------

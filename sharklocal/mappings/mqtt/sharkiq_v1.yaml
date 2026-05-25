@@ -1,6 +1,7 @@
 id: sharkiq_v1
 description: "SharkIQ vacuum local MQTT protocol"
 transport: mqtt
+priority: 10
 connection:
   port: 1883
 

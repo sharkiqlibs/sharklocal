@@ -1,6 +1,7 @@
 id: sharkiq_v2
-description: "SharkIQ vacuum local REST API (RobEye)"
+description: "SharkIQ vacuum local REST API (Direct control)"
 transport: http
+priority: 20
 connection:
   port: 8080
   verify_ssl: false

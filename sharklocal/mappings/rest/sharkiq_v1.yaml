@@ -1,6 +1,7 @@
 id: sharkiq_v1
 description: "SharkIQ vacuum local REST API (HTTPS with self-signed certificate)"
 transport: https
+priority: 15
 connection:
   port: 443
   verify_ssl: false

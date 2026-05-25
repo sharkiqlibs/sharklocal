@@ -6,14 +6,14 @@
 
 | Feature | REST | MQTT | Supported mappings |
 |---------|:----:|:----:|--------------------|
-| Start cleaning | ✅ | ❌ | REST: `sharkiq_v1` |
-| Stop | ✅ | ❌ | REST: `sharkiq_v1` |
-| Return to dock | ✅ | ❌ | REST: `sharkiq_v1` |
-| Explore / Map | ✅ | ❌ | REST: `sharkiq_v1` |
-| Get status | ✅ | ❌ | REST: `sharkiq_v1` |
-| Get event log | ✅ | ❌ | REST: `sharkiq_v1` |
-| Get robot ID | ✅ | ❌ | REST: `sharkiq_v1` |
-| Get Wi-Fi status | ✅ | ❌ | REST: `sharkiq_v1` |
+| Start cleaning | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Stop | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Return to dock | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Explore / Map | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Get status | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Get event log | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Get robot ID | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Get Wi-Fi status | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
 
 ---
 
@@ -21,9 +21,9 @@
 
 | Field | REST | MQTT | Supported mappings |
 |-------|:----:|:----:|--------------------|
-| Operating mode | ✅ | ❌ | REST: `sharkiq_v1` |
-| Battery level | ✅ | ❌ | REST: `sharkiq_v1` |
-| Charging status | ✅ | ❌ | REST: `sharkiq_v1` |
+| Operating mode | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Battery level | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| Charging status | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
 
 ---
 
@@ -31,12 +31,12 @@
 
 | Mode | REST | MQTT | Supported mappings |
 |------|:----:|:----:|--------------------|
-| `cleaning`           | ✅ | ❌ | REST: `sharkiq_v1` |
-| `returning_to_dock`  | ✅ | ❌ | REST: `sharkiq_v1` |
+| `cleaning`           | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| `returning_to_dock`  | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
 | `docking`            | ❌ | ❌ | None |
-| `docked`             | ✅ | ❌ | REST: `sharkiq_v1` |
-| `idle`               | ✅ | ❌ | REST: `sharkiq_v1` |
-| `exploring`          | ✅ | ❌ | REST: `sharkiq_v1` |
+| `docked`             | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| `idle`               | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
+| `exploring`          | ✅ | ❌ | REST: `sharkiq_v1`, `sharkiq_v2` |
 
 ---
 

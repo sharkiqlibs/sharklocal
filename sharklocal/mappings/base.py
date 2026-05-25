@@ -37,6 +37,7 @@ class RESTMappingConfig:
     verify_ssl: bool
     actions: Dict[str, RESTActionSpec]
     mode_map: Dict[str, str] = field(default_factory=dict)
+    priority: int = 0
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> RESTMappingConfig:
@@ -59,6 +60,7 @@ class RESTMappingConfig:
             verify_ssl=conn.get("verify_ssl", True),
             actions=actions,
             mode_map=data.get("mode_map", {}),
+            priority=int(data.get("priority", 0)),
         )
 
 
@@ -75,6 +77,7 @@ class MQTTMappingConfig:
     status_decoder: str
     actions: Dict[str, MQTTActionSpec]
     modes: Dict[int, str]
+    priority: int = 0
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> MQTTMappingConfig:
@@ -99,4 +102,5 @@ class MQTTMappingConfig:
             status_decoder=data.get("status_decoder", ""),
             actions=actions,
             modes=modes,
+            priority=int(data.get("priority", 0)),
         )
