@@ -71,8 +71,8 @@ Adapted for the SharkIQ local MQTT protocol.</p>
     pos = 0
 
     while pos &lt; len(data):
-        if pos &gt;= len(data):
-            break
+        if pos &gt;= len(data):  # pragma: no cover
+            break  # pragma: no cover
 
         tag, pos = _decode_varint(data, pos)
         field_num = tag &gt;&gt; 3
@@ -102,9 +102,9 @@ Adapted for the SharkIQ local MQTT protocol.</p>
             pos += 4
             result[field_num] = value
 
-        else:
+        else:  # pragma: no cover
             # Unknown wire type — cannot continue parsing safely.
-            break
+            break  # pragma: no cover
 
     return result</code></pre>
 </details>

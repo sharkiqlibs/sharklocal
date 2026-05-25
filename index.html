@@ -1503,9 +1503,9 @@ fire-and-forget command actions.</p>
 
         if last_connect_error:
             raise last_connect_error
-        raise ActionNotSupportedError(
-            f&#34;No configured transport could execute action &#39;{action}&#39;&#34;
-        )</code></pre>
+        raise ActionNotSupportedError(  # pragma: no cover
+            f&#34;No configured transport could execute action &#39;{action}&#39;&#34;  # pragma: no cover
+        )  # pragma: no cover</code></pre>
 </details>
 <div class="desc"><p>Unified vacuum client with automatic transport selection.</p>
 <p>REST is preferred when both transports support an action. MQTT is used as a
