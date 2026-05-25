@@ -1,0 +1,54 @@
+id: sharkiq_v2
+description: "SharkIQ vacuum local REST API (RobEye)"
+transport: http
+connection:
+  port: 8080
+  verify_ssl: false
+
+# Maps REST mode strings returned by /get/status to normalized VacuumMode values.
+# Note: "ready" mode requires combined evaluation with the "charging" field —
+# that logic lives in RESTVacuumClient._parse_status and cannot be expressed
+# here as a simple lookup. "ready" is mapped to "docked" as a safe default and
+# overridden to "idle" when charging is "unconnected".
+mode_map:
+  "ready": "docked"
+  "cleaning": "cleaning"
+  "go_home": "returning_to_dock"
+  "exploring": "exploring"
+
+actions:
+  start_cleaning:
+    method: GET
+    path: "/set/clean_all"
+
+  stop:
+    method: GET
+    path: "/set/stop"
+
+  go_home:
+    method: GET
+    path: "/set/go_home"
+
+  explore:
+    method: GET
+    path: "/set/explore"
+
+  get_status:
+    method: GET
+    path: "/get/status"
+    response_map: status
+
+  get_events:
+    method: GET
+    path: "/get/event_log"
+    response_map: events
+
+  get_robot_id:
+    method: GET
+    path: "/get/robot_id"
+    response_map: robot_id
+
+  get_wifi_status:
+    method: GET
+    path: "/get/wifi_status"
+    response_map: wifi_status
