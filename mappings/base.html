@@ -83,7 +83,7 @@ class MQTTActionSpec:
 </dd>
 <dt id="sharklocal.mappings.base.MQTTMappingConfig"><code class="flex name class">
 <span>class <span class="ident">MQTTMappingConfig</span></span>
-<span>(</span><span>id: str,<br>description: str,<br>port: int,<br>command_topic: str,<br>status_topic: str,<br>encoding: str,<br>status_decoder: str,<br>actions: Dict[str, <a title="sharklocal.mappings.base.MQTTActionSpec" href="#sharklocal.mappings.base.MQTTActionSpec">MQTTActionSpec</a>],<br>modes: Dict[int, str])</span>
+<span>(</span><span>id: str,<br>description: str,<br>port: int,<br>command_topic: str,<br>status_topic: str,<br>encoding: str,<br>status_decoder: str,<br>actions: Dict[str, <a title="sharklocal.mappings.base.MQTTActionSpec" href="#sharklocal.mappings.base.MQTTActionSpec">MQTTActionSpec</a>],<br>modes: Dict[int, str],<br>priority: int = 0)</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -103,6 +103,7 @@ class MQTTMappingConfig:
     status_decoder: str
     actions: Dict[str, MQTTActionSpec]
     modes: Dict[int, str]
+    priority: int = 0
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -&gt; MQTTMappingConfig:
@@ -127,6 +128,7 @@ class MQTTMappingConfig:
             status_decoder=data.get(&#34;status_decoder&#34;, &#34;&#34;),
             actions=actions,
             modes=modes,
+            priority=int(data.get(&#34;priority&#34;, 0)),
         )</code></pre>
 </details>
 <div class="desc"><p>Full configuration for an MQTT transport mapping.</p></div>
@@ -166,6 +168,10 @@ class MQTTMappingConfig:
 <div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="sharklocal.mappings.base.MQTTMappingConfig.port"><code class="name">var <span class="ident">port</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.MQTTMappingConfig.priority"><code class="name">var <span class="ident">priority</span> : int</code></dt>
 <dd>
 <div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
@@ -225,7 +231,7 @@ class RESTActionSpec:
 </dd>
 <dt id="sharklocal.mappings.base.RESTMappingConfig"><code class="flex name class">
 <span>class <span class="ident">RESTMappingConfig</span></span>
-<span>(</span><span>id: str,<br>description: str,<br>transport: str,<br>port: int,<br>verify_ssl: bool,<br>actions: Dict[str, <a title="sharklocal.mappings.base.RESTActionSpec" href="#sharklocal.mappings.base.RESTActionSpec">RESTActionSpec</a>],<br>mode_map: Dict[str, str] = &lt;factory&gt;)</span>
+<span>(</span><span>id: str,<br>description: str,<br>transport: str,<br>port: int,<br>verify_ssl: bool,<br>actions: Dict[str, <a title="sharklocal.mappings.base.RESTActionSpec" href="#sharklocal.mappings.base.RESTActionSpec">RESTActionSpec</a>],<br>mode_map: Dict[str, str] = &lt;factory&gt;,<br>priority: int = 0)</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -243,6 +249,7 @@ class RESTMappingConfig:
     verify_ssl: bool
     actions: Dict[str, RESTActionSpec]
     mode_map: Dict[str, str] = field(default_factory=dict)
+    priority: int = 0
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -&gt; RESTMappingConfig:
@@ -265,6 +272,7 @@ class RESTMappingConfig:
             verify_ssl=conn.get(&#34;verify_ssl&#34;, True),
             actions=actions,
             mode_map=data.get(&#34;mode_map&#34;, {}),
+            priority=int(data.get(&#34;priority&#34;, 0)),
         )</code></pre>
 </details>
 <div class="desc"><p>Full configuration for a REST transport mapping.</p></div>
@@ -296,6 +304,10 @@ class RESTMappingConfig:
 <div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="sharklocal.mappings.base.RESTMappingConfig.port"><code class="name">var <span class="ident">port</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="sharklocal.mappings.base.RESTMappingConfig.priority"><code class="name">var <span class="ident">priority</span> : int</code></dt>
 <dd>
 <div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
@@ -343,6 +355,7 @@ class RESTMappingConfig:
 <li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.id" href="#sharklocal.mappings.base.MQTTMappingConfig.id">id</a></code></li>
 <li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.modes" href="#sharklocal.mappings.base.MQTTMappingConfig.modes">modes</a></code></li>
 <li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.port" href="#sharklocal.mappings.base.MQTTMappingConfig.port">port</a></code></li>
+<li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.priority" href="#sharklocal.mappings.base.MQTTMappingConfig.priority">priority</a></code></li>
 <li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.status_decoder" href="#sharklocal.mappings.base.MQTTMappingConfig.status_decoder">status_decoder</a></code></li>
 <li><code><a title="sharklocal.mappings.base.MQTTMappingConfig.status_topic" href="#sharklocal.mappings.base.MQTTMappingConfig.status_topic">status_topic</a></code></li>
 </ul>
@@ -366,6 +379,7 @@ class RESTMappingConfig:
 <li><code><a title="sharklocal.mappings.base.RESTMappingConfig.id" href="#sharklocal.mappings.base.RESTMappingConfig.id">id</a></code></li>
 <li><code><a title="sharklocal.mappings.base.RESTMappingConfig.mode_map" href="#sharklocal.mappings.base.RESTMappingConfig.mode_map">mode_map</a></code></li>
 <li><code><a title="sharklocal.mappings.base.RESTMappingConfig.port" href="#sharklocal.mappings.base.RESTMappingConfig.port">port</a></code></li>
+<li><code><a title="sharklocal.mappings.base.RESTMappingConfig.priority" href="#sharklocal.mappings.base.RESTMappingConfig.priority">priority</a></code></li>
 <li><code><a title="sharklocal.mappings.base.RESTMappingConfig.transport" href="#sharklocal.mappings.base.RESTMappingConfig.transport">transport</a></code></li>
 <li><code><a title="sharklocal.mappings.base.RESTMappingConfig.verify_ssl" href="#sharklocal.mappings.base.RESTMappingConfig.verify_ssl">verify_ssl</a></code></li>
 </ul>
