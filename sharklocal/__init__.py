@@ -47,9 +47,9 @@ from .rest_client import RESTVacuumClient
 
 try:
     from importlib.metadata import version, PackageNotFoundError
-except ImportError:
+except ImportError:  # pragma: no cover
     # Python < 3.8
-    from importlib_metadata import version, PackageNotFoundError
+    from importlib_metadata import version, PackageNotFoundError  # pragma: no cover
 
 try:
     __version__ = version("sharkiq")

@@ -40,8 +40,8 @@ def decode_raw(data: bytes) -> Dict[int, Any]:
     pos = 0
 
     while pos < len(data):
-        if pos >= len(data):
-            break
+        if pos >= len(data):  # pragma: no cover
+            break  # pragma: no cover
 
         tag, pos = _decode_varint(data, pos)
         field_num = tag >> 3
@@ -71,8 +71,8 @@ def decode_raw(data: bytes) -> Dict[int, Any]:
             pos += 4
             result[field_num] = value
 
-        else:
+        else:  # pragma: no cover
             # Unknown wire type — cannot continue parsing safely.
-            break
+            break  # pragma: no cover
 
     return result

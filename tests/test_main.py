@@ -484,3 +484,182 @@ def test_main_fatal_error(capsys):
             main()
     captured = capsys.readouterr()
     assert "FATAL: fatal" in captured.out
+
+
+# ---------------------------------------------------------------------------
+# run_probe — MQTT-only (covers elif res.has_rest: False branch)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_run_probe_mqtt_only_no_hint(capsys):
+    """When only MQTT works (has_rest=False), the REST hint should NOT be printed."""
+    probe_res = ProbeResult(mqtt_mapping="m1")  # no rest_mapping → has_rest=False
+    mock_vacuum = AsyncMock()
+    mock_vacuum.probe.return_value = probe_res
+    mock_vacuum.via = "MQTT"
+    mock_vacuum.__aenter__.return_value = mock_vacuum
+
+    with patch("sharklocal.__main__.VacuumClient", return_value=mock_vacuum):
+        await run_probe("1.2.3.4")
+
+    captured = capsys.readouterr()
+    assert "Run with --test" not in captured.out
+
+
+# ---------------------------------------------------------------------------
+# run_test_logic — mode_map branch where norm_m != docked or raw != ready
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_run_test_logic_mode_map_non_docked_entry(capsys):
+    """A mode_map entry where norm_m is not 'docked' covers the False branch of the idle-inject check."""
+    mock_rest_mapping = MagicMock()
+    mock_rest_mapping.actions = ["get_status"]
+    # raw_m="cleaning", norm_m="cleaning" → condition False → idle NOT added
+    mock_rest_mapping.mode_map = {"cleaning": "cleaning"}
+
+    mock_rest_client = AsyncMock()
+    mock_rest_client.call.side_effect = [
+        VacuumStatus(mode=VacuumMode.CLEANING, battery_level=50)
+    ]
+
+    with patch("sharklocal.__main__.list_rest_mappings", return_value=["r1"]), \
+         patch("sharklocal.__main__.load_rest_mapping", return_value=mock_rest_mapping), \
+         patch("sharklocal.__main__.RESTVacuumClient", return_value=mock_rest_client), \
+         patch("sharklocal.__main__.list_mqtt_mappings", return_value=[]):
+        results = await run_test_logic("1.2.3.4")
+
+    assert "idle" not in results["rest"]["r1"]["modes"]
+    assert "cleaning" in results["rest"]["r1"]["modes"]
+
+
+# ---------------------------------------------------------------------------
+# run_test_logic — explore action success (covers elif action=="get_events" False branch)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_run_test_logic_explore_action_success(capsys):
+    """When 'explore' is in mapping.actions and succeeds, the get_events elif evaluates False."""
+    mock_rest_mapping = MagicMock()
+    mock_rest_mapping.actions = ["explore"]
+    mock_rest_mapping.mode_map = {}
+
+    mock_rest_client = AsyncMock()
+    # explore returns a generic truthy value (not VacuumStatus/DeviceInfo)
+    mock_rest_client.call.side_effect = [True]
+
+    with patch("sharklocal.__main__.list_rest_mappings", return_value=["r1"]), \
+         patch("sharklocal.__main__.load_rest_mapping", return_value=mock_rest_mapping), \
+         patch("sharklocal.__main__.RESTVacuumClient", return_value=mock_rest_client), \
+         patch("sharklocal.__main__.list_mqtt_mappings", return_value=[]):
+        results = await run_test_logic("1.2.3.4")
+
+    assert results["rest"]["r1"]["actions"]["explore"] is True
+
+
+# ---------------------------------------------------------------------------
+# run_test_logic — outer REST except (covers line 167 except Exception: pass)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_run_test_logic_load_rest_mapping_raises(capsys):
+    """If load_rest_mapping raises, the outer except silently skips that mapping."""
+    with patch("sharklocal.__main__.list_rest_mappings", return_value=["bad_mapping"]), \
+         patch("sharklocal.__main__.load_rest_mapping", side_effect=Exception("corrupt yaml")), \
+         patch("sharklocal.__main__.list_mqtt_mappings", return_value=[]):
+        results = await run_test_logic("1.2.3.4")
+
+    # bad_mapping should not appear in results (exception was swallowed)
+    assert "bad_mapping" not in results["rest"]
+
+
+# ---------------------------------------------------------------------------
+# run_test_logic — MQTT commands skipped when test_commands=False
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_run_test_logic_mqtt_commands_skipped(capsys):
+    """When test_commands=False and a command action is in MQTT mapping, it prints SKIPPED."""
+    mock_mqtt_mapping = MagicMock()
+    mock_mqtt_mapping.actions = ["get_status", "start_cleaning"]
+    mock_mqtt_mapping.modes = {}
+
+    mock_mqtt_client = AsyncMock()
+    mock_mqtt_client.call.side_effect = [
+        VacuumStatus(mode=VacuumMode.DOCKED, battery_level=100, charging=True)
+    ]
+
+    with patch("sharklocal.__main__.list_rest_mappings", return_value=[]), \
+         patch("sharklocal.__main__.list_mqtt_mappings", return_value=["m1"]), \
+         patch("sharklocal.__main__.load_mqtt_mapping", return_value=mock_mqtt_mapping), \
+         patch("sharklocal.__main__.MQTTVacuumClient", return_value=mock_mqtt_client):
+        results = await run_test_logic("1.2.3.4", test_commands=False)
+
+    captured = capsys.readouterr()
+    assert "SKIPPED" in captured.out
+    # start_cleaning was not executed, so it should not appear in results
+    assert "start_cleaning" not in results["mqtt"]["m1"]["actions"]
+
+
+# ---------------------------------------------------------------------------
+# run_test_logic — MQTT command failure when test_commands=True
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_run_test_logic_mqtt_command_fails(capsys):
+    """When test_commands=True and a command fails, it is recorded as False."""
+    mock_mqtt_mapping = MagicMock()
+    mock_mqtt_mapping.actions = ["get_status", "start_cleaning"]
+    mock_mqtt_mapping.modes = {}
+
+    mock_mqtt_client = AsyncMock()
+    mock_mqtt_client.call.side_effect = [
+        VacuumStatus(mode=VacuumMode.DOCKED, battery_level=100, charging=True),
+        Exception("motor jammed"),
+    ]
+
+    with patch("sharklocal.__main__.list_rest_mappings", return_value=[]), \
+         patch("sharklocal.__main__.list_mqtt_mappings", return_value=["m1"]), \
+         patch("sharklocal.__main__.load_mqtt_mapping", return_value=mock_mqtt_mapping), \
+         patch("sharklocal.__main__.MQTTVacuumClient", return_value=mock_mqtt_client):
+        results = await run_test_logic("1.2.3.4", test_commands=True)
+
+    captured = capsys.readouterr()
+    assert "FAILED" in captured.out
+    assert results["mqtt"]["m1"]["actions"]["start_cleaning"] is False
+
+
+# ---------------------------------------------------------------------------
+# main — no action flag, only host (covers parser.print_help() else branch)
+# ---------------------------------------------------------------------------
+
+
+def test_main_no_action_shows_help(capsys):
+    """When host is given but no action flag, print_help() is called."""
+    with patch("sys.argv", ["sharklocal", "1.2.3.4"]):
+        main()
+    captured = capsys.readouterr()
+    assert "usage: sharklocal" in captured.out or "usage: sharklocal" in captured.err
+
+
+# ---------------------------------------------------------------------------
+# run_test_logic — outer MQTT except (covers line 206 except Exception: pass)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_run_test_logic_load_mqtt_mapping_raises(capsys):
+    """If load_mqtt_mapping raises, the outer except silently skips that mapping."""
+    with patch("sharklocal.__main__.list_rest_mappings", return_value=[]), \
+         patch("sharklocal.__main__.list_mqtt_mappings", return_value=["bad_mapping"]), \
+         patch("sharklocal.__main__.load_mqtt_mapping", side_effect=Exception("bad yaml")):
+        results = await run_test_logic("1.2.3.4")
+
+    # bad_mapping should not appear in results (exception was swallowed)
+    assert "bad_mapping" not in results["mqtt"]

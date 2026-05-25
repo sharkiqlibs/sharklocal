@@ -9,11 +9,11 @@
 | Start cleaning | ❌ | ✅ | MQTT: `sharkiq_v1` |
 | Stop | ❌ | ✅ | MQTT: `sharkiq_v1` |
 | Return to dock | ❌ | ✅ | MQTT: `sharkiq_v1` |
-| Explore / Map | ❌ | ❌ | |
+| Explore / Map | ❌ | ❌ | None |
 | Get status | ❌ | ✅ | MQTT: `sharkiq_v1` |
-| Get event log | ❌ | ❌ | |
-| Get robot ID | ❌ | ❌ | |
-| Get Wi-Fi status | ❌ | ❌ | |
+| Get event log | ❌ | ❌ | None |
+| Get robot ID | ❌ | ❌ | None |
+| Get Wi-Fi status | ❌ | ❌ | None |
 
 ---
 
@@ -35,8 +35,8 @@
 | `returning_to_dock` | ❌ | ✅ | MQTT: `sharkiq_v1` |
 | `docking` | ❌ | ✅ | MQTT: `sharkiq_v1` |
 | `docked` | ❌ | ✅ | MQTT: `sharkiq_v1` |
-| `idle` | ❌ | ❌ | |
-| `exploring` | ❌ | ❌ | |
+| `idle` | ❌ | ❌ | None |
+| `exploring` | ❌ | ❌ | None |
 
 ---
 

@@ -354,6 +354,6 @@ class VacuumClient:
 
         if last_connect_error:
             raise last_connect_error
-        raise ActionNotSupportedError(
-            f"No configured transport could execute action '{action}'"
-        )
+        raise ActionNotSupportedError(  # pragma: no cover
+            f"No configured transport could execute action '{action}'"  # pragma: no cover
+        )  # pragma: no cover

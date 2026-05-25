@@ -5,10 +5,29 @@ from __future__ import annotations
 import asyncio
 import base64
 import struct
+import sys
+from contextlib import asynccontextmanager
 from typing import AsyncIterator, Dict
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
+
+# ---------------------------------------------------------------------------
+# Helpers — asyncio.timeout compatibility shim for Python < 3.11
+# ---------------------------------------------------------------------------
+
+@asynccontextmanager
+async def _noop_timeout(secs):
+    """Pass-through async context manager simulating asyncio.timeout."""
+    yield
+
+
+@asynccontextmanager
+async def _immediate_timeout(secs):
+    """Raise TimeoutError immediately, simulating an elapsed asyncio.timeout."""
+    raise TimeoutError(f"Simulated timeout after {secs}s")
+    yield  # required by asynccontextmanager, never reached
 
 from sharklocal.exceptions import (
     ActionNotSupportedError,
@@ -317,8 +336,9 @@ async def test_request_status_returns_decoded_status(mqtt_mapping):
     mock_ctx.__aenter__ = AsyncMock(return_value=mock_inner)
     mock_ctx.__aexit__ = AsyncMock(return_value=False)
 
-    with patch("aiomqtt.Client", return_value=mock_ctx):
-        result = await client.call("get_status")
+    with patch.object(asyncio, "timeout", _noop_timeout, create=True):
+        with patch("aiomqtt.Client", return_value=mock_ctx):
+            result = await client.call("get_status")
 
     assert isinstance(result, VacuumStatus)
     assert result.mode == VacuumMode.CLEANING
@@ -334,27 +354,19 @@ async def test_request_status_returns_decoded_status(mqtt_mapping):
 async def test_request_status_timeout_raises_command_error(mqtt_mapping):
     client = MQTTVacuumClient("host", mqtt_mapping)
 
-    class _InfiniteIterator:
-        def __aiter__(self):
-            return self
-
-        async def __anext__(self):
-            await asyncio.sleep(100)  # Blocks until timeout fires
-
     mock_inner = AsyncMock()
-    mock_inner.messages = _InfiniteIterator()
     mock_ctx = AsyncMock()
     mock_ctx.__aenter__ = AsyncMock(return_value=mock_inner)
     mock_ctx.__aexit__ = AsyncMock(return_value=False)
 
-    # Override timeout to be very short so test is fast
     mqtt_mapping.actions["get_status"] = MQTTActionSpec(
         type="status_request", payload="DDDD", timeout=0.01
     )
 
-    with patch("aiomqtt.Client", return_value=mock_ctx):
-        with pytest.raises(CommandError, match="Timed out"):
-            await client.call("get_status")
+    with patch.object(asyncio, "timeout", _immediate_timeout, create=True):
+        with patch("aiomqtt.Client", return_value=mock_ctx):
+            with pytest.raises(CommandError, match="Timed out"):
+                await client.call("get_status")
 
 
 # ---------------------------------------------------------------------------
@@ -583,11 +595,111 @@ async def test_request_status_no_message_raises_command_error(mqtt_mapping):
     mock_ctx.__aenter__ = AsyncMock(return_value=mock_inner)
     mock_ctx.__aexit__ = AsyncMock(return_value=False)
 
-    # Use a large timeout so the empty iterator ends before timeout
     mqtt_mapping.actions["get_status"] = MQTTActionSpec(
         type="status_request", payload="DDDD", timeout=30.0
     )
 
-    with patch("aiomqtt.Client", return_value=mock_ctx):
-        with pytest.raises(CommandError, match="No status message"):
+    with patch.object(asyncio, "timeout", _noop_timeout, create=True):
+        with patch("aiomqtt.Client", return_value=mock_ctx):
+            with pytest.raises(CommandError, match="No status message"):
+                await client.call("get_status")
+
+
+# ---------------------------------------------------------------------------
+# call() — aiomqtt ImportError raises ConnectError
+# ---------------------------------------------------------------------------
+
+
+async def test_call_aiomqtt_import_error_raises_connect_error(mqtt_mapping):
+    """If aiomqtt cannot be imported, call() raises ConnectError."""
+    client = MQTTVacuumClient("host", mqtt_mapping)
+
+    original_import = __builtins__.__import__ if hasattr(__builtins__, "__import__") else __import__
+
+    def _failing_import(name, *args, **kwargs):
+        if name == "aiomqtt":
+            raise ImportError("No module named 'aiomqtt'")
+        return original_import(name, *args, **kwargs)
+
+    with patch("builtins.__import__", side_effect=_failing_import):
+        with pytest.raises(ConnectError, match="aiomqtt is required"):
+            await client.call("start_cleaning")
+
+
+# ---------------------------------------------------------------------------
+# _request_status() — aiomqtt ImportError raises ConnectError
+# ---------------------------------------------------------------------------
+
+
+async def test_request_status_aiomqtt_import_error_raises_connect_error(mqtt_mapping):
+    """If aiomqtt cannot be imported in _request_status, ConnectError is raised."""
+    client = MQTTVacuumClient("host", mqtt_mapping)
+
+    import builtins
+    real_import = builtins.__import__
+
+    def _failing_import(name, *args, **kwargs):
+        if name == "aiomqtt":
+            raise ImportError("No module named 'aiomqtt'")
+        return real_import(name, *args, **kwargs)
+
+    with patch("builtins.__import__", side_effect=_failing_import):
+        with pytest.raises(ConnectError, match="aiomqtt is required"):
+            await client._request_status("DDDD", 5.0)
+
+
+# ---------------------------------------------------------------------------
+# monitor() — aiomqtt ImportError raises ConnectError
+# ---------------------------------------------------------------------------
+
+
+async def test_monitor_aiomqtt_import_error_raises_connect_error(mqtt_mapping):
+    """If aiomqtt cannot be imported in monitor(), ConnectError is raised."""
+    client = MQTTVacuumClient("host", mqtt_mapping)
+
+    import builtins
+    real_import = builtins.__import__
+
+    def _failing_import(name, *args, **kwargs):
+        if name == "aiomqtt":
+            raise ImportError("No module named 'aiomqtt'")
+        return real_import(name, *args, **kwargs)
+
+    with patch("builtins.__import__", side_effect=_failing_import):
+        with pytest.raises(ConnectError, match="aiomqtt is required"):
+            await client.monitor(lambda s: None)
+
+
+# ---------------------------------------------------------------------------
+# call() — known exception re-raised without wrapping
+# ---------------------------------------------------------------------------
+
+
+async def test_call_reraises_command_error_from_request_status(mqtt_mapping):
+    """CommandError raised inside _request_status is re-raised by call() unchanged."""
+    client = MQTTVacuumClient("host", mqtt_mapping)
+
+    with patch.object(
+        client, "_request_status", side_effect=CommandError("status decode failed")
+    ):
+        with pytest.raises(CommandError, match="status decode failed"):
             await client.call("get_status")
+
+
+# ---------------------------------------------------------------------------
+# monitor() — known SharklocalError sub-type re-raised without wrapping
+# ---------------------------------------------------------------------------
+
+
+async def test_monitor_reraises_connect_error_from_subscribe(mqtt_mapping):
+    """ConnectError raised from subscribe() inside monitor() is re-raised, not wrapped."""
+    client = MQTTVacuumClient("host", mqtt_mapping)
+    mock_inner = AsyncMock()
+    mock_inner.subscribe.side_effect = ConnectError("broker dropped connection")
+    mock_ctx = AsyncMock()
+    mock_ctx.__aenter__ = AsyncMock(return_value=mock_inner)
+    mock_ctx.__aexit__ = AsyncMock(return_value=False)
+
+    with patch("aiomqtt.Client", return_value=mock_ctx):
+        with pytest.raises(ConnectError, match="broker dropped connection"):
+            await client.monitor(lambda s: None)

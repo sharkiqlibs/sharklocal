@@ -187,3 +187,15 @@ def test_load_rest_mapping_nonexistent_custom_path_skipped(tmp_path):
     """Non-existent custom directory does not raise; falls through to not-found."""
     with pytest.raises(MappingNotFoundError):
         load_rest_mapping("custom_rest_v1", search_paths=[tmp_path / "no_such_dir"])
+
+
+def test_list_rest_mappings_nonexistent_dir_skipped(tmp_path):
+    """A non-existent custom search path is silently skipped; built-ins are still returned."""
+    names = list_rest_mappings(search_paths=[tmp_path / "no_such_dir"])
+    assert "sharkiq_v1" in names
+
+
+def test_list_mqtt_mappings_nonexistent_dir_skipped(tmp_path):
+    """A non-existent custom search path is silently skipped; built-ins are still returned."""
+    names = list_mqtt_mappings(search_paths=[tmp_path / "no_such_dir"])
+    assert "sharkiq_v1" in names
