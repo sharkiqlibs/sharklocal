@@ -19,3 +19,5 @@ Visit a model's details page to see the full feature-level compatibility matrix 
 | `RV2610BFCA` |  ❌  |  ✅  | [Details](/docs/compatibility/rv2610bfca.md) |
 | `UR2500SR`   |  ❌  |  ✅  | [Details](/docs/compatibility/ur2500sr.md)   |
 | `RV2001DRUS` |  ✅  |  ❌  | [Details](/docs/compatibility/rv2001drus.md)   |
+| `RV1100ARUS` |  ❌  |  ✅  | [Details](/docs/compatibility/RV1100ARUS_AV1110ARUS.md) |
+| `UR2360EEUS` |  ❌  |  ❌  | [Details](/docs/compatibility/UR2360EEUS.md) |
