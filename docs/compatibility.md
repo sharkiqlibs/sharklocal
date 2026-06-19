@@ -21,3 +21,4 @@ Visit a model's details page to see the full feature-level compatibility matrix 
 | `RV2001DRUS` |  ✅  |  ❌  | [Details](/docs/compatibility/rv2001drus.md)   |
 | `RV1100ARUS` |  ❌  |  ✅  | [Details](/docs/compatibility/RV1100ARUS_AV1110ARUS.md) |
 | `UR2360EEUS` |  ❌  |  ❌  | [Details](/docs/compatibility/UR2360EEUS.md) |
+| `AV251WAXUS` |  ❌  |  ✅  | [Details](/docs/compatibility/av251waxus.md) |

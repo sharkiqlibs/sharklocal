@@ -220,14 +220,18 @@ def generate_markdown_report(results: Dict[str, Any]) -> str:
         mappings = []
         for m_id, m in results["rest"].items():
             if is_mode:
-                if act_or_mode in m["modes"]: mappings.append(f"REST: `{m_id}`")
+                if m["actions"].get("get_status") and act_or_mode in m["modes"]:
+                    mappings.append(f"REST: `{m_id}`")
             else:
-                if m["actions"].get(act_or_mode): mappings.append(f"REST: `{m_id}`")
+                if m["actions"].get(act_or_mode):
+                    mappings.append(f"REST: `{m_id}`")
         for m_id, m in results["mqtt"].items():
             if is_mode:
-                if act_or_mode in m["modes"]: mappings.append(f"MQTT: `{m_id}`")
+                if m["actions"].get("get_status") and act_or_mode in m["modes"]:
+                    mappings.append(f"MQTT: `{m_id}`")
             else:
-                if m["actions"].get(act_or_mode): mappings.append(f"MQTT: `{m_id}`")
+                if m["actions"].get(act_or_mode):
+                    mappings.append(f"MQTT: `{m_id}`")
         
         return "<br/> ".join(mappings) if mappings else "None"
 
