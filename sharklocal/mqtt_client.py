@@ -51,13 +51,6 @@ def _decode_sharkiq_protobuf_v1(
     """
     raw = protobuf.decode_raw(payload)
 
-    mode_int = raw.get(4, 0)
-    mode_str = modes.get(mode_int, "unknown")
-    try:
-        mode = VacuumMode(mode_str)
-    except ValueError:
-        mode = VacuumMode.UNKNOWN
-
     battery_info = raw.get(9, {})
     battery_percent: Optional[int] = None
     charging: Optional[bool] = None
@@ -65,6 +58,18 @@ def _decode_sharkiq_protobuf_v1(
         battery_percent = battery_info.get(8)
         charging_state = battery_info.get(1, 0)
         charging = charging_state == 3  # ChargingState.CHARGING_ON_DOCK
+
+    # The vacuum can report a transient returning mode while already charging.
+    # Charging on the dock is the authoritative normalized state.
+    if charging:
+        mode = VacuumMode.DOCKED
+    else:
+        mode_int = raw.get(4, 0)
+        mode_str = modes.get(mode_int, "unknown")
+        try:
+            mode = VacuumMode(mode_str)
+        except ValueError:
+            mode = VacuumMode.UNKNOWN
 
     return VacuumStatus(
         mode=mode,
