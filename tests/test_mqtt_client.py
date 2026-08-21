@@ -131,6 +131,13 @@ def test_decode_sharkiq_charging_state_3_means_charging():
     assert result.charging is True
 
 
+def test_decode_sharkiq_charging_overrides_returning_mode():
+    payload = _build_status_payload(7, 3, 80)
+    result = _decode_sharkiq_protobuf_v1(payload, _MODES)
+    assert result.mode == VacuumMode.DOCKED
+    assert result.charging is True
+
+
 def test_decode_sharkiq_charging_state_0_not_charging():
     payload = _build_status_payload(6, 0, 80)
     result = _decode_sharkiq_protobuf_v1(payload, _MODES)
@@ -341,7 +348,7 @@ async def test_request_status_returns_decoded_status(mqtt_mapping):
             result = await client.call("get_status")
 
     assert isinstance(result, VacuumStatus)
-    assert result.mode == VacuumMode.CLEANING
+    assert result.mode == VacuumMode.DOCKED
     assert result.battery_level == 80
     assert result.charging is True
 
@@ -410,7 +417,7 @@ async def test_monitor_invokes_sync_callback(mqtt_mapping):
         await client.monitor(callback)
 
     assert len(received) == 1
-    assert received[0].mode == VacuumMode.CLEANING
+    assert received[0].mode == VacuumMode.DOCKED
 
 
 # ---------------------------------------------------------------------------
