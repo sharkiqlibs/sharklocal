@@ -19,7 +19,12 @@ from . import (
 )
 
 # Actions metadata for help and validation
-VALID_COMMANDS = ["start", "stop", "dock", "status", "events", "info"]
+VALID_COMMANDS = [
+    "start", "stop", "dock", "status", "events", "info", "find",
+    "suction-eco", "suction-normal", "suction-max",
+    "recharge-resume-on", "recharge-resume-off",
+    "evac-resume-on", "evac-resume-off",
+]
 ACTION_MAP = {
     "status": "get_status",
     "start": "start_cleaning",
@@ -27,6 +32,14 @@ ACTION_MAP = {
     "dock": "go_home",
     "events": "get_events",
     "info": "get_robot_id",
+    "find": "find_robot",
+    "suction-eco": "set_suction_eco",
+    "suction-normal": "set_suction_normal",
+    "suction-max": "set_suction_max",
+    "recharge-resume-on": "recharge_resume_on",
+    "recharge-resume-off": "recharge_resume_off",
+    "evac-resume-on": "evac_resume_on",
+    "evac-resume-off": "evac_resume_off",
 }
 
 def print_status(status: VacuumStatus, prefix: str = "[STATUS]"):
@@ -35,6 +48,21 @@ def print_status(status: VacuumStatus, prefix: str = "[STATUS]"):
     chg = f" (Charging)" if status.charging else ""
     mode_str = status.mode.value if hasattr(status.mode, "value") else str(status.mode)
     print(f"\r{prefix} Mode: {mode_str:20} | Battery: {bat}{chg}", end="", flush=True)
+    if status.map is not None:
+        print_map(status.map)
+
+def print_map(vacuum_map) -> None:
+    """Helper to summarise a map frame on its own line."""
+    grid = vacuum_map.grid
+    robot = vacuum_map.robot
+    pose = f"({robot.x:.2f}, {robot.y:.2f}) @ {robot.heading:.2f} rad" if robot else "unknown"
+    kind = "persisted map" if vacuum_map.persisted else "live map"
+    rooms = ", ".join(r.name for r in vacuum_map.rooms) or "none"
+    print(
+        f"\n[MAP] {kind}: {grid.width}x{grid.height} @ {grid.resolution:.2f} m | "
+        f"path pts: {len(vacuum_map.path)} | robot: {pose} | rooms: {rooms}",
+        flush=True,
+    )
 
 async def run_command(host: str, cmd: str, transport: str):
     """Execute a single specific command."""

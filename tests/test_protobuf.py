@@ -4,7 +4,18 @@ import struct
 
 import pytest
 
-from sharklocal.protobuf import _decode_varint, decode_raw
+from sharklocal.protobuf import (
+    _decode_varint,
+    decode_fields,
+    decode_raw,
+    encode_bytes_field,
+    encode_float_field,
+    encode_string_field,
+    encode_varint,
+    encode_varint_field,
+    float32,
+    remove_field,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -207,3 +218,104 @@ def test_decode_raw_wire_type_2_nested_exception_falls_back_to_bytes():
     result = decode_raw(data)
     assert isinstance(result[5], bytes)
     assert result[5] == inner
+
+
+# ---------------------------------------------------------------------------
+# decode_fields — one level, every occurrence, no recursion
+# ---------------------------------------------------------------------------
+
+
+def test_decode_fields_keeps_repeated_values_in_order():
+    data = _make_field(1, 0, _varint_encode(10)) + _make_field(1, 0, _varint_encode(99))
+    assert decode_fields(data) == {1: [10, 99]}
+
+
+def test_decode_fields_returns_length_delimited_as_bytes():
+    inner = _make_field(8, 0, _varint_encode(75))
+    data = _make_field(9, 2, _length_delimited(inner))
+    result = decode_fields(data)
+    assert result[9] == [inner]
+
+
+def test_decode_fields_fixed_widths():
+    data = _make_field(2, 1, struct.pack("<Q", 0xDEADBEEFCAFEBABE)) + _make_field(
+        3, 5, struct.pack("<I", 0xDEADBEEF)
+    )
+    result = decode_fields(data)
+    assert result[2] == [0xDEADBEEFCAFEBABE]
+    assert result[3] == [0xDEADBEEF]
+
+
+def test_decode_fields_unknown_wire_type_stops_parsing():
+    # Field 1 varint, then a tag with wire type 3 — parsing stops there.
+    data = _make_field(1, 0, _varint_encode(5)) + bytes([0x13]) + _make_field(2, 0, _varint_encode(7))
+    assert decode_fields(data) == {1: [5]}
+
+
+def test_decode_fields_empty():
+    assert decode_fields(b"") == {}
+
+
+# ---------------------------------------------------------------------------
+# float32
+# ---------------------------------------------------------------------------
+
+
+def test_float32_reinterprets_fixed32():
+    packed = struct.unpack("<I", struct.pack("<f", 0.06))[0]
+    assert float32(packed) == pytest.approx(0.06)
+
+
+# ---------------------------------------------------------------------------
+# remove_field
+# ---------------------------------------------------------------------------
+
+
+def test_remove_field_drops_every_occurrence_and_keeps_the_rest():
+    keep_a = _make_field(1, 0, _varint_encode(10))
+    drop_1 = _make_field(7, 2, _length_delimited(b"\x00" * 50))
+    keep_b = _make_field(2, 1, struct.pack("<Q", 1))
+    drop_2 = _make_field(7, 5, struct.pack("<I", 2))
+    keep_c = _make_field(3, 5, struct.pack("<I", 3))
+    assert remove_field(keep_a + drop_1 + keep_b + drop_2 + keep_c, 7) == keep_a + keep_b + keep_c
+
+
+def test_remove_field_with_varint_occurrence():
+    data = _make_field(4, 0, _varint_encode(6)) + _make_field(9, 0, _varint_encode(1))
+    assert remove_field(data, 9) == _make_field(4, 0, _varint_encode(6))
+
+
+def test_remove_field_keeps_remainder_after_unknown_wire_type():
+    data = _make_field(1, 0, _varint_encode(1)) + bytes([0x13, 0xAA])
+    assert remove_field(data, 1) == bytes([0x13, 0xAA])
+
+
+def test_remove_field_absent_is_identity():
+    data = _make_field(1, 0, _varint_encode(1))
+    assert remove_field(data, 5) == data
+
+
+# ---------------------------------------------------------------------------
+# Encoding — round-trips through the decoders
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("value", [0, 1, 127, 128, 150, 300, 2**32])
+def test_encode_varint_round_trip(value):
+    assert _decode_varint(encode_varint(value), 0) == (value, len(encode_varint(value)))
+
+
+def test_encode_varint_field():
+    assert decode_fields(encode_varint_field(16, 11)) == {16: [11]}
+
+
+def test_encode_float_field():
+    result = decode_fields(encode_float_field(1, 0.06))
+    assert float32(result[1][0]) == pytest.approx(0.06)
+
+
+def test_encode_bytes_field_and_string_field():
+    payload = encode_bytes_field(6, b"\x01\x02") + encode_string_field(3, "3CDBBC59")
+    result = decode_fields(payload)
+    assert result[6] == [b"\x01\x02"]
+    assert result[3] == [b"3CDBBC59"]

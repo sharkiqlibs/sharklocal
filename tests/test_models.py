@@ -4,8 +4,16 @@ import pytest
 
 from sharklocal.models import (
     DeviceInfo,
+    MapFeature,
+    MapGrid,
+    MapPoint,
+    MapPose,
+    MapRoom,
     ProbeResult,
+    SuctionLevel,
     VacuumEvent,
+    VacuumLogEntry,
+    VacuumMap,
     VacuumMode,
     VacuumStatus,
 )
@@ -17,13 +25,13 @@ from sharklocal.models import (
 
 
 def test_vacuum_mode_all_values():
-    expected = {"unknown", "cleaning", "returning_to_dock", "docking", "docked", "idle", "exploring"}
+    expected = {"unknown", "cleaning", "returning_to_dock", "docking", "docked", "idle", "exploring", "paused", "error"}
     actual = {m.value for m in VacuumMode}
     assert actual == expected
 
 
 def test_vacuum_mode_count():
-    assert len(VacuumMode) == 7
+    assert len(VacuumMode) == 9
 
 
 def test_vacuum_mode_is_str_enum():
@@ -175,3 +183,135 @@ def test_probe_result_defaults_none():
     result = ProbeResult()
     assert result.rest_mapping is None
     assert result.mqtt_mapping is None
+
+
+# ---------------------------------------------------------------------------
+# SuctionLevel
+# ---------------------------------------------------------------------------
+
+
+def test_suction_level_values():
+    assert {level.value for level in SuctionLevel} == {"eco", "normal", "max"}
+
+
+def test_suction_level_is_str_enum():
+    assert SuctionLevel.MAX == "max"
+
+
+# ---------------------------------------------------------------------------
+# VacuumStatus — MQTT-only optional fields
+# ---------------------------------------------------------------------------
+
+
+def test_vacuum_status_mqtt_fields_default_none():
+    status = VacuumStatus(mode=VacuumMode.IDLE)
+    assert status.job_active is None
+    assert status.deep_clean is None
+    assert status.recharge_resume is None
+    assert status.evac_resume is None
+    assert status.map is None
+
+
+# ---------------------------------------------------------------------------
+# MapGrid
+# ---------------------------------------------------------------------------
+
+
+def _grid(room_ids=None) -> MapGrid:
+    return MapGrid(
+        resolution=0.06,
+        width=2,
+        height=2,
+        origin=MapPoint(-1.0, 0.5),
+        cells=b"\x0f\x64\x4b\x00",
+        room_ids=room_ids,
+    )
+
+
+@pytest.mark.parametrize(
+    "value, wall, floor",
+    [
+        (0x00, False, True),  # cleaned floor
+        (0x0A, False, True),  # floor
+        (0x0F, False, True),  # floor
+        (0x19, False, True),  # floor
+        (0x4B, False, False),  # unknown
+        (0x5C, True, False),  # wall
+        (0x64, True, False),  # wall
+    ],
+)
+def test_map_grid_cell_classification(value, wall, floor):
+    assert MapGrid.is_wall(value) is wall
+    assert MapGrid.is_floor(value) is floor
+
+
+def test_map_grid_cell_lookup_is_row_major():
+    grid = _grid()
+    assert grid.cell(0, 0) == 0x0F
+    assert grid.cell(1, 0) == 0x64
+    assert grid.cell(0, 1) == 0x4B
+    assert grid.cell(1, 1) == 0x00
+
+
+def test_map_grid_room_id_lookup():
+    assert _grid().room_id(1, 1) is None
+    assert _grid(room_ids=b"\x01\x01\x02\x00").room_id(0, 1) == 2
+
+
+def test_map_grid_constants():
+    assert MapGrid.UNKNOWN == 0x4B
+    assert MapGrid.CLEANED == 0x00
+
+
+def test_map_grid_counts_cleaned_cells():
+    assert MapGrid.is_cleaned(0x00) is True
+    assert MapGrid.is_cleaned(0x0F) is False
+    assert _grid().cleaned_cells == 1
+
+
+# ---------------------------------------------------------------------------
+# VacuumMap
+# ---------------------------------------------------------------------------
+
+
+def test_vacuum_map_defaults():
+    vacuum_map = VacuumMap(grid=_grid())
+    assert vacuum_map.path == []
+    assert vacuum_map.poses == []
+    assert vacuum_map.persisted is False
+    assert vacuum_map.rooms == []
+    assert vacuum_map.features == []
+    assert vacuum_map.log == []
+    assert vacuum_map.robot is None
+    assert vacuum_map.clean_time is None
+
+
+def test_vacuum_map_robot_is_last_pose():
+    poses = [MapPose(0.0, 0.0, 0.0), MapPose(1.0, 2.0, 3.1)]
+    assert VacuumMap(grid=_grid(), poses=poses).robot == poses[-1]
+
+
+def test_vacuum_map_cleaned_area_counts_cleaned_cells():
+    # _grid() has one cleaned cell.
+    assert VacuumMap(grid=_grid()).cleaned_area == pytest.approx(0.06 * 0.06)
+
+
+def test_vacuum_map_clean_time_sums_the_logged_clean_times():
+    log = [
+        VacuumLogEntry("DT_NORMAL_CLEAN_TIME", 0, "28"),
+        VacuumLogEntry("DT_FOLLOW_CLEAN_TIME", 0, "73"),
+        VacuumLogEntry("DT_ESCAPE_CLEAN_TIME", 0, "0"),
+        VacuumLogEntry("DT_NORMAL_DOCK_TIME", 0, "42"),
+        VacuumLogEntry("DT_WARNING_CODE", 0, "WARN_MM_LOWLIGHT"),
+    ]
+    assert VacuumMap(grid=_grid(), log=log).clean_time == 101
+
+
+def test_map_room_and_feature_and_log_entry_fields():
+    room = MapRoom(name="Kitchen", polygon=[MapPoint(0, 0)])
+    assert room.selected is False
+    assert room.coverage is None
+    feature = MapFeature(kind="door", points=[MapPoint(0, 0), MapPoint(1, 0)])
+    assert feature.kind == "door"
+    entry = VacuumLogEntry(key="DT_WARNING_CODE", time=1789867008, code="WARN_MM_LOWLIGHT")
+    assert entry.code == "WARN_MM_LOWLIGHT"

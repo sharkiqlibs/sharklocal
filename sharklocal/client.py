@@ -3,14 +3,44 @@
 from __future__ import annotations
 
 import asyncio
+import inspect
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
+from . import protobuf
 from .exceptions import ActionNotSupportedError, ConnectError, SharklocalError
 from .mappings import load_mqtt_mapping, load_rest_mapping
-from .models import DeviceInfo, ProbeResult, VacuumEvent, VacuumStatus
+from .models import (
+    DeviceInfo,
+    ProbeResult,
+    SuctionLevel,
+    VacuumEvent,
+    VacuumMap,
+    VacuumStatus,
+)
 from .mqtt_client import MQTTVacuumClient
 from .rest_client import RESTVacuumClient
+from .vacuum_map import encode_room_selection, encode_spot_selection
+
+
+# On/off settings in the SharkIQ settings block (PbConfig), by field number,
+# from the app's protobuf schema. Written as PbToggleT: 1 on, 2 off. Field 8
+# (Recharge & Resume) and 7 (Evac & Resume) match the app captures exactly.
+CONFIG_TOGGLES: Dict[str, int] = {
+    "evac_resume": 7,
+    "recharge_resume": 8,
+    "room_by_room": 12,
+    "continuous_cross_hatch": 13,
+    "clean_edge": 14,
+    "do_not_disturb": 18,
+    "carpet_boost": 19,
+    "child_lock": 24,
+    "silent_mode": 25,
+    "underglow_lights": 26,
+    "button_sounds": 27,
+}
+CONFIG_VOLUME = 2
+CONFIG_CARPET_DETECT = 15
 
 
 class VacuumClient:
@@ -72,6 +102,13 @@ class VacuumClient:
         self._status_callback: Optional[Callable[[VacuumStatus], None]] = None
         self._monitor_stop: Optional[asyncio.Event] = None
         self._monitor_task: Optional[asyncio.Task] = None
+
+        # Most recent status and map seen while monitoring. ``last_map`` keeps
+        # the latest *persisted* map (rooms, dock, vectors) — room and spot
+        # cleaning need its room definition — and is not replaced by the
+        # room-less live frames a job produces.
+        self.last_status: Optional[VacuumStatus] = None
+        self.last_map: Optional[VacuumMap] = None
 
         # Primary transport in use. "REST" when REST is pinned and reachable,
         # "MQTT" when only MQTT is available, "NONE" until probe() confirms a
@@ -137,6 +174,16 @@ class VacuumClient:
         """Begin a mapping/exploration run."""
         return await self._execute("explore")
 
+    async def request_map(self) -> bool:
+        """Ask the robot to publish its persisted map (MQTT only).
+
+        The reply arrives through monitoring like any other map frame, and
+        carries the last job's path and summary but no event log — a way to
+        recover a job whose end-of-job frame was missed. Sent while docked; not
+        tried mid-job.
+        """
+        return await self._execute("request_map")
+
     async def get_status(self) -> VacuumStatus:
         """Return the current vacuum status."""
         return await self._execute("get_status")
@@ -152,6 +199,120 @@ class VacuumClient:
     async def get_wifi_status(self) -> DeviceInfo:
         """Return Wi-Fi connection details including MAC address."""
         return await self._execute("get_wifi_status")
+
+    async def pause(self) -> bool:
+        """Pause the current job (resume it with :meth:`start_cleaning`)."""
+        return await self._execute("pause")
+
+    async def edge_clean(self) -> bool:
+        """Clean along the walls."""
+        return await self._execute("edge_clean")
+
+    async def set_config(self, field_num: int, value: int) -> bool:
+        """Write one field of the robot's settings block (``PbConfig``).
+
+        MQTT-only and SharkIQ-specific: the command is field 7 carrying the one
+        setting. :data:`CONFIG_TOGGLES` names the on/off settings; suction and
+        the resume settings have their own methods.
+        """
+        payload = protobuf.encode_bytes_field(7, protobuf.encode_varint_field(field_num, value))
+        return await self._send(payload)
+
+    async def set_toggle(self, name: str, enabled: bool) -> bool:
+        """Switch a named on/off setting (see :data:`CONFIG_TOGGLES`)."""
+        if name not in CONFIG_TOGGLES:
+            raise ValueError(f"Unknown setting {name!r}; known: {sorted(CONFIG_TOGGLES)}")
+        return await self.set_config(CONFIG_TOGGLES[name], 1 if enabled else 2)
+
+    async def set_carpet_detect(self, mode: int) -> bool:
+        """Set carpet detection (1 disabled, 2 automatic; codes.CARPET_DETECT_MODES)."""
+        return await self.set_config(CONFIG_CARPET_DETECT, mode)
+
+    async def set_volume(self, volume: int) -> bool:
+        """Set the robot's voice volume."""
+        return await self.set_config(CONFIG_VOLUME, volume)
+
+    async def find_robot(self) -> bool:
+        """Make the vacuum play its locate sound."""
+        return await self._execute("find_robot")
+
+    async def set_suction(self, level: SuctionLevel) -> bool:
+        """Set the suction power level (``eco``, ``normal`` or ``max``).
+
+        The setting has no field in the status message — the robot only echoes
+        it once on change — so callers wanting to display it should remember
+        the last level they set.
+        """
+        return await self._execute(f"set_suction_{SuctionLevel(level).value}")
+
+    async def set_recharge_resume(self, enabled: bool) -> bool:
+        """Enable or disable Recharge & Resume (finish the job after charging)."""
+        return await self._execute(f"recharge_resume_{'on' if enabled else 'off'}")
+
+    async def set_evac_resume(self, enabled: bool) -> bool:
+        """Enable or disable Evac & Resume (empty the bin mid-job, then continue)."""
+        return await self._execute(f"evac_resume_{'on' if enabled else 'off'}")
+
+    async def clean_rooms(
+        self,
+        room_names: List[str],
+        *,
+        deep: bool = False,
+        vacuum_map: Optional[VacuumMap] = None,
+    ) -> bool:
+        """Clean the named rooms, then start.
+
+        Room cleaning is an MQTT-only, two-message sequence: the map's room
+        definition with the selection, then ``start_cleaning``. It needs a
+        persisted map for the room definition — pass one, or let the client use
+        the latest seen while monitoring (:attr:`last_map`).
+
+        Args:
+            room_names: Room names exactly as shown in the app.
+            deep: Request a Matrix (two-pass) clean of those rooms.
+            vacuum_map: The persisted map to take the room definition from.
+
+        Raises:
+            SharklocalError: If no persisted map is available.
+            ValueError: If a room name is not on the map.
+            ActionNotSupportedError: If no MQTT mapping is configured.
+        """
+        payload = self._room_definition_payload(
+            vacuum_map, lambda m: encode_room_selection(m, room_names, deep=deep)
+        )
+        await self._send(payload)
+        return await self.start_cleaning()
+
+    async def clean_spot(
+        self,
+        x: float,
+        y: float,
+        *,
+        vacuum_map: Optional[VacuumMap] = None,
+    ) -> bool:
+        """Spot-clean a ~1.5 m square centred on ``(x, y)`` metres, then start.
+
+        Same requirements as :meth:`clean_rooms`. The coordinates are in the
+        map frame — the one :class:`~sharklocal.models.VacuumMap` reports.
+        """
+        payload = self._room_definition_payload(
+            vacuum_map, lambda m: encode_spot_selection(m, x, y)
+        )
+        await self._send(payload)
+        return await self.start_cleaning()
+
+    def _room_definition_payload(
+        self,
+        vacuum_map: Optional[VacuumMap],
+        build: Callable[[VacuumMap], bytes],
+    ) -> bytes:
+        chosen = vacuum_map or self.last_map
+        if chosen is None or not chosen.persisted:
+            raise SharklocalError(
+                "A persisted map is required for room or spot cleaning; the robot "
+                "publishes one each time it docks — monitor until last_map is set"
+            )
+        return build(chosen)
 
     # ------------------------------------------------------------------
     # Mapping probe
@@ -253,7 +414,32 @@ class VacuumClient:
 
         self._monitor_stop = asyncio.Event()
         self._monitor_task = asyncio.ensure_future(
-            self._mqtt.monitor(self._status_callback, stop_event=self._monitor_stop)
+            self._mqtt.monitor(self._on_monitor_status, stop_event=self._monitor_stop)
+        )
+
+    async def _on_monitor_status(self, status: VacuumStatus) -> None:
+        """Cache the latest status and persisted map, then forward to the callback."""
+        self.last_status = status
+        if status.map is not None and status.map.persisted and not self._same_job_poorer(status.map):
+            self.last_map = status.map
+        callback = self._status_callback
+        if inspect.iscoroutinefunction(callback):
+            await callback(status)
+        else:
+            callback(status)  # type: ignore[misc]
+
+    def _same_job_poorer(self, vacuum_map: VacuumMap) -> bool:
+        """``True`` if *vacuum_map* would replace a report of the same job.
+
+        A requested map repeats the last job without its event log, so it only
+        supersedes the cached map when it records a different job.
+        """
+        current = self.last_map
+        return (
+            not vacuum_map.report
+            and current is not None
+            and current.report
+            and current.job_started == vacuum_map.job_started
         )
 
     async def stop_monitoring(self) -> None:
@@ -312,6 +498,28 @@ class VacuumClient:
     # ------------------------------------------------------------------
     # Internal transport evaluation
     # ------------------------------------------------------------------
+
+    async def _send(self, payload: bytes) -> bool:
+        """Publish a runtime-built payload over the active MQTT transport.
+
+        Only MQTT can carry these, so REST is never consulted. With several
+        MQTT candidates and no pinned client, each is tried in order.
+        """
+        mqtt_options: List[MQTTVacuumClient] = (
+            [self._mqtt] if self._mqtt is not None else self._mqtt_candidates
+        )
+        if not mqtt_options:
+            raise ActionNotSupportedError(
+                "Room and spot cleaning need an MQTT mapping; none is configured"
+            )
+
+        last_connect_error: Optional[ConnectError] = None
+        for client in mqtt_options:
+            try:
+                return await client.send(payload)
+            except ConnectError as exc:
+                last_connect_error = exc
+        raise last_connect_error  # type: ignore[misc]
 
     async def _execute(self, action: str) -> Any:
         """Execute *action* using the best available transport.

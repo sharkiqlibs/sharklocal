@@ -31,10 +31,17 @@ The table below shows which features are available per transport for the built-i
 | Stop (pause) | ✅ | ✅ |
 | Return to dock | ✅ | ✅ |
 | Explore / map room | ✅ | ❌ |
+| Find robot | ❌ | ✅ |
+| Suction level (eco / normal / max) | ❌ | ✅ |
+| Recharge & Resume, Evac & Resume | ❌ | ✅ |
+| Clean rooms / Matrix Clean / spot clean | ❌ | ✅ ² |
 | **Status** | | |
 | Polling status (mode + battery) | ✅ | ✅ |
 | Real-time status (mode) | ❌  | ✅ |
-| Event log | ✅ | ❌ |
+| Job active, deep clean, settings | ❌ | ✅ |
+| Live map (grid, cleaned path, robot pose) | ❌ | ✅ |
+| Persisted map (rooms, walls, doors, dock, job stats) | ❌ | ✅ ³ |
+| Event log | ✅ | ✅ ³ |
 | **Device info** | | |
 | Firmware version | ✅ | ❌ |
 | MAC address / unique ID | ✅ | ❌ |
@@ -45,7 +52,7 @@ The table below shows which features are available per transport for the built-i
 | Returning to dock | ✅ | ✅ |
 | Docking | ❌ | ✅ |
 | Docked (calculated) | ✅ ¹ | ✅ |
-| Idle / stopped off dock (calculated) | ✅ ¹ | ❌ |
+| Idle / stopped off dock | ✅ ¹ | ✅ |
 | Exploring / mapping | ✅ | ❌ |
 | **Connection** | | |
 | Protocol | HTTPS | MQTT |
@@ -53,10 +60,14 @@ The table below shows which features are available per transport for the built-i
 | SSL | Self-signed (verify disabled) | None |
 
 > ¹ `DOCKED` and `IDLE` are derived from the combination of `mode` and `charging` fields in the REST response — neither is reported directly by the API. Charging reports connected or not connected, not active charging of the battery.
+>
+> ² Built at runtime from the persisted map's room definition (`VacuumClient.clean_rooms()` / `clean_spot()`), not a fixed mapping action.
+>
+> ³ Carried by the persisted map frame the robot publishes when it docks, available through monitoring (`VacuumStatus.map`). `VacuumClient.request_map()` makes the robot publish it again, without the event log.
 
 **Recommendations:**
-- Configure **both transports** (`rest_mappings` + `mqtt_mappings`) to get full feature coverage: REST for device info, events, and explore; MQTT for real-time monitoring and docking state.
-- If only one transport is available, **REST** provides broader feature coverage. **MQTT** is the better choice when real-time status updates without polling are required.
+- Configure **both transports** (`rest_mappings` + `mqtt_mappings`) to get full feature coverage: REST for device info and explore; MQTT for real-time monitoring, maps, rooms and settings.
+- If only one transport is available, **MQTT** now provides the broader feature coverage on models that publish map frames, and is the only source of real-time status. **REST** remains the only source of device info (firmware, MAC address) where it is reachable.
 - Use `probe()` when the correct mapping is not known ahead of time.
 
 ---

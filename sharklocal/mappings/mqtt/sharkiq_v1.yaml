@@ -15,27 +15,104 @@ encoding: base64
 # Name of the registered decoder function used to parse status payloads.
 status_decoder: sharkiq_protobuf_v1
 
-# Maps protobuf OperatingMode integer values to normalized VacuumMode strings.
-# Reference: sharkiq.proto OperatingMode enum
+# Maps the robot's system state (SysStateT, field 4) to normalized VacuumMode
+# strings. Names per sharklocal.codes.SYSTEM_STATES; 6, 7, 13 and 14 have been
+# observed on an RV2610BFCA (13 is charging on the dock, 14 battery full).
 modes:
-  6: cleaning
-  7: returning_to_dock
-  13: docking
-  14: docked
+  2: idle         # SYS_ST_SLEEPING
+  3: idle         # SYS_ST_WAITING
+  4: paused       # SYS_ST_PAUSE
+  5: error        # SYS_ST_ERROR
+  6: cleaning     # SYS_ST_CLEANING
+  7: returning_to_dock  # SYS_ST_DOCKING
+  8: cleaning     # SYS_ST_SPOTING
+  9: cleaning     # SYS_ST_ALONG_WALL
+  13: docked      # SYS_ST_CHARGING
+  14: docked      # SYS_ST_BATTERY_FULL
+  15: cleaning    # SYS_ST_GO_TARGET
+  16: cleaning    # SYS_ST_CLEAN_ZONE
+  24: exploring   # SYS_ST_AUTO_EXPLORE
+  25: returning_to_dock  # SYS_ST_REDOCKING
+  26: returning_to_dock  # SYS_ST_EXPLORE_DOCKING
+  28: cleaning    # SYS_ST_RELOCAL
+  29: docking     # SYS_ST_BASE_DOCK
+  31: exploring   # SYS_ST_CARPET_EXPLORE
 
+# Payloads are protobuf. Field 16 is the job command (9 start, 17 return to
+# dock); field 7 carries settings, which the robot echoes back in field 8 of
+# the next status message.
 actions:
   start_cleaning:
     type: command
-    payload: "OgQKAhBLgAEJ"
+    payload: "gAEJ"
 
+  # The app bundles a suction change into its start/dock messages; these
+  # send the bare job command so the setting is left alone.
   stop:
     type: command
-    payload: "OgQKAhAygAER"
+    payload: "gAER"
 
   # go_home issues the same stop-and-return command as stop in this protocol.
   go_home:
     type: command
-    payload: "OgQKAhAygAER"
+    payload: "gAER"
+
+  # Field 16 is UserCtrlSignalT (sharklocal.codes-style names from the app's
+  # schema): 8 USR_CTR_PAUSE; start_cleaning above is 9 USR_CTR_RESUME, which
+  # also resumes a paused job; 16 USR_CTR_ALONG_WALL; 38 USR_CTR_AUTO_EXPLORE.
+  pause:
+    type: command
+    payload: "gAEI"
+
+  edge_clean:
+    type: command
+    payload: "gAEQ"
+
+  explore:
+    type: command
+    payload: "gAEm"
+
+  # Field 39 = 1: FloorControlT FL_CTR_LOAD_ALL. The robot answers with its
+  # persisted map (floor type 4) on the status topic.
+  request_map:
+    type: command
+    payload: "uAIB"
+
+  # Field 25 = 104
+  find_robot:
+    type: command
+    payload: "yAFo"
+
+  # Field 7.1.2 = 50 / 75 / 100
+  set_suction_eco:
+    type: command
+    payload: "OgQKAhAy"
+
+  set_suction_normal:
+    type: command
+    payload: "OgQKAhBL"
+
+  set_suction_max:
+    type: command
+    payload: "OgQKAhBk"
+
+  # Field 7.8 = 1 / 2. Reflected by field 35 present / absent in status.
+  recharge_resume_on:
+    type: command
+    payload: "OgJAAQ=="
+
+  recharge_resume_off:
+    type: command
+    payload: "OgJAAg=="
+
+  # Field 7.7 = 1 / 2. Reflected by field 36 present / absent in status.
+  evac_resume_on:
+    type: command
+    payload: "OgI4AQ=="
+
+  evac_resume_off:
+    type: command
+    payload: "OgI4Ag=="
 
   get_status:
     type: status_request

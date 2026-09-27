@@ -69,6 +69,7 @@ status_decoder: sharkiq_protobuf_v1
 
 # Maps protobuf OperatingMode integers to normalized VacuumMode strings
 modes:
+  4: idle
   6: cleaning
   7: returning_to_dock
   13: docking
@@ -77,7 +78,11 @@ modes:
 actions:
   start_cleaning:
     type: command          # Fire-and-forget MQTT publish
-    payload: "OgQKAhBLgAEJ"
+    payload: "gAEJ"
+
+  set_suction_max:         # Settings are commands too; the robot echoes them in field 8
+    type: command
+    payload: "OgQKAhBk"
 
   get_status:
     type: status_request   # Publish then wait for a response message
@@ -89,6 +94,8 @@ actions:
 
 - `command` — publishes the payload and returns `True`
 - `status_request` — publishes the payload, then subscribes and waits up to `timeout` seconds for the first response; returns the decoded `VacuumStatus`
+
+Commands whose payload depends on state — room and spot selection carry the map's room definition — are not mapping actions. They are built at runtime by `sharklocal.vacuum_map` and published with `MQTTVacuumClient.send()`; `VacuumClient.clean_rooms()` / `clean_spot()` wrap that.
 
 ---
 

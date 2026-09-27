@@ -67,8 +67,9 @@ sharklocal/
 ├── client.py          # VacuumClient — unified entry point with transport selection
 ├── rest_client.py     # RESTVacuumClient — async HTTPS/HTTP client (aiohttp)
 ├── mqtt_client.py     # MQTTVacuumClient — async MQTT client (aiomqtt)
-├── protobuf.py        # Pure-Python schema-free protobuf decoder
-├── models.py          # VacuumStatus, VacuumEvent, DeviceInfo, VacuumMode
+├── protobuf.py        # Pure-Python schema-free protobuf codec
+├── vacuum_map.py      # Map / room / trajectory decoding and room-command encoding (MQTT)
+├── models.py          # VacuumStatus, VacuumMap, VacuumEvent, DeviceInfo, VacuumMode
 ├── exceptions.py      # Typed exception hierarchy
 └── mappings/
     ├── __init__.py    # load_* / list_* utilities
@@ -155,6 +156,23 @@ All transport clients return normalized model objects. See [docs/data-models.md]
 
 ---
 
+## Maps, Rooms and Settings (MQTT)
+
+On models that publish map frames, monitoring yields the live map (occupancy grid, cleaned path, robot pose with heading) every few seconds during a job, and a persisted map (rooms, wall and door vectors, dock pose, job statistics, the robot's event log) each time the robot docks. The `sharkiq_v1` MQTT mapping also exposes suction level, find-robot and the Recharge & Resume / Evac & Resume settings, and `VacuumClient` can start room, Matrix and spot cleans.
+
+```python
+async with VacuumClient("192.168.1.100", mqtt_mappings="sharkiq_v1") as vacuum:
+    vacuum.on_status_update(lambda s: s.map and print(s.map.robot, len(s.map.path)))
+    await vacuum.start_monitoring()
+
+    await vacuum.set_suction(SuctionLevel.MAX)
+    await vacuum.clean_rooms(["Kitchen"], deep=True)   # needs vacuum.last_map (persisted)
+```
+
+See [docs/vacuum-client.md](docs/vacuum-client.md#maps-rooms-and-settings) and the `VacuumMap` section of [docs/data-models.md](docs/data-models.md).
+
+---
+
 ## Mapping Configuration
 
 See [docs/mapping-configuration.md](docs/mapping-configuration.md) for annotated YAML examples for both transports, the full field reference, instructions for adding support for a new model, and how to register a custom MQTT decoder.
@@ -209,6 +227,10 @@ The minimum required coverage is **95%**. All PRs must pass before merging. See 
 - The `status_water_tank_removed` event type is fired for dustbin removal on vacuums, not only water tank removal on mops. Handle accordingly in Home Assistant event translation.
 - The `/get/robot_id` endpoint does not expose a serial number. Use the `mac_address` from `/get/wifi_status` as the device `unique_id`.
 - MQTT `go_home` and `stop` send identical payloads in the `sharkiq_v1` mapping — both issue the protobuf stop-and-return command.
+- The SharkClean app bundles a suction change into its start and dock messages. The `sharkiq_v1` mapping sends the bare job commands, so `start_cleaning` and `go_home` leave the suction setting alone.
+- The suction level is not reported in MQTT status; the robot echoes a change once (field 8) and is then silent about it. Remember the last level you set.
+- Room and spot cleans re-upload the map's room definition, names included. Build them from the latest persisted map (`VacuumClient.last_map`) or a stale one renames rooms.
+- On the RV2610BFCA, `BatteryInfo.ChargingState` is `3` in every frame, so `charging` is `True` mid-clean. Use `mode` to decide whether the robot is docked.
 - The REST API uses a self-signed TLS certificate. SSL verification is disabled in the `sharkiq_v1` mapping (`verify_ssl: false`).
 - The REST `charging` field returns `"connected"` or `"unconnected"` as strings, not a boolean. The library normalises this to `True`/`False` on `VacuumStatus.charging`.
 - The REST `mode` field alone is insufficient to determine if a vacuum is docked. `mode: "ready"` with `charging: "connected"` means docked (`VacuumMode.DOCKED`); `mode: "ready"` with `charging: "unconnected"` means the vacuum is stopped but off the dock (`VacuumMode.IDLE`). This combined evaluation is handled automatically by the library.

@@ -11,6 +11,7 @@ import pytest
 from sharklocal.__main__ import (
     generate_markdown_report,
     main,
+    print_map,
     print_status,
     run_command,
     run_probe,
@@ -19,7 +20,17 @@ from sharklocal.__main__ import (
     setup_argparse,
     monitor_vacuum,
 )
-from sharklocal.models import DeviceInfo, ProbeResult, VacuumMode, VacuumStatus
+from sharklocal.models import (
+    DeviceInfo,
+    MapGrid,
+    MapPoint,
+    MapPose,
+    MapRoom,
+    ProbeResult,
+    VacuumMap,
+    VacuumMode,
+    VacuumStatus,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -663,3 +674,31 @@ async def test_run_test_logic_load_mqtt_mapping_raises(capsys):
 
     # bad_mapping should not appear in results (exception was swallowed)
     assert "bad_mapping" not in results["mqtt"]
+
+
+def test_print_status_with_map_adds_map_line(capsys):
+    """A map-bearing status prints a second, map summary line."""
+    grid = MapGrid(resolution=0.06, width=191, height=105, origin=MapPoint(-8.43, -1.41), cells=b"")
+    vacuum_map = VacuumMap(
+        grid=grid,
+        path=[MapPoint(0, 0), MapPoint(0.1, 0)],
+        poses=[MapPose(-6.27, 1.72, -2.89)],
+        rooms=[MapRoom(name="Bathroom", polygon=[]), MapRoom(name="Hallway", polygon=[])],
+    )
+    status = VacuumStatus(mode=VacuumMode.CLEANING, battery_level=84, map=vacuum_map)
+    print_status(status)
+    captured = capsys.readouterr()
+    assert "[STATUS] Mode: cleaning" in captured.out
+    assert "[MAP] live map: 191x105 @ 0.06 m" in captured.out
+    assert "path pts: 2" in captured.out
+    assert "robot: (-6.27, 1.72) @ -2.89 rad" in captured.out
+    assert "rooms: Bathroom, Hallway" in captured.out
+
+
+def test_print_map_persisted_without_robot_or_rooms(capsys):
+    grid = MapGrid(resolution=0.06, width=2, height=2, origin=MapPoint(0, 0), cells=b"")
+    print_map(VacuumMap(grid=grid, persisted=True))
+    captured = capsys.readouterr()
+    assert "[MAP] persisted map: 2x2" in captured.out
+    assert "robot: unknown" in captured.out
+    assert "rooms: none" in captured.out

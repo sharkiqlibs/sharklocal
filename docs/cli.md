@@ -52,4 +52,6 @@ Send a specific command via a chosen transport (defaults to `mqtt`):
 python -m sharklocal <IP_ADDRESS> --cmd dock --transport mqtt
 ```
 
-Available commands: `start`, `stop`, `dock`, `status`, `events`, `info`.
+Available commands: `start`, `stop`, `dock`, `status`, `events`, `info`, `find`, `suction-eco`, `suction-normal`, `suction-max`, `recharge-resume-on`, `recharge-resume-off`, `evac-resume-on`, `evac-resume-off`.
+
+The settings and `find` commands exist only in the MQTT mapping. While `--monitor` is running, any status update that carries map data prints an extra `[MAP]` line with the grid size, the number of cleaned-path points, the robot's pose and the room names (persisted map only).

@@ -15,7 +15,18 @@ from sharklocal.exceptions import (
     ConnectError,
     SharklocalError,
 )
-from sharklocal.models import DeviceInfo, ProbeResult, VacuumEvent, VacuumMode, VacuumStatus
+from sharklocal.models import (
+    DeviceInfo,
+    MapGrid,
+    MapPoint,
+    MapRoom,
+    ProbeResult,
+    SuctionLevel,
+    VacuumEvent,
+    VacuumMap,
+    VacuumMode,
+    VacuumStatus,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -576,3 +587,280 @@ async def test_stop_monitoring_cancels_task():
     await client.stop_monitoring()
     assert client._monitor_task is None
     assert client._monitor_stop is None
+
+
+# ---------------------------------------------------------------------------
+# Settings and locate actions → _execute() call with correct action name
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "method_name, args, expected_action",
+    [
+        ("find_robot", (), "find_robot"),
+        ("request_map", (), "request_map"),
+        ("set_suction", (SuctionLevel.ECO,), "set_suction_eco"),
+        ("set_suction", ("normal",), "set_suction_normal"),
+        ("set_suction", (SuctionLevel.MAX,), "set_suction_max"),
+        ("set_recharge_resume", (True,), "recharge_resume_on"),
+        ("set_recharge_resume", (False,), "recharge_resume_off"),
+        ("set_evac_resume", (True,), "evac_resume_on"),
+        ("set_evac_resume", (False,), "evac_resume_off"),
+        ("pause", (), "pause"),
+        ("edge_clean", (), "edge_clean"),
+    ],
+)
+async def test_setting_actions_call_execute(method_name, args, expected_action):
+    client = _make_vacuum_client_with_mocks()
+    with patch.object(client, "_execute", new_callable=AsyncMock) as mock_exec:
+        mock_exec.return_value = True
+        await getattr(client, method_name)(*args)
+        mock_exec.assert_awaited_once_with(expected_action)
+
+
+@pytest.mark.parametrize(
+    "name, enabled, captured",
+    [
+        # The app's own Recharge & Resume / Evac & Resume commands.
+        ("recharge_resume", True, "OgJAAQ=="),
+        ("recharge_resume", False, "OgJAAg=="),
+        ("evac_resume", True, "OgI4AQ=="),
+        ("evac_resume", False, "OgI4Ag=="),
+    ],
+)
+async def test_toggle_writer_reproduces_the_app_captures(name, enabled, captured):
+    import base64
+
+    client = _make_vacuum_client_with_mocks()
+    client._mqtt.send = AsyncMock(return_value=True)
+    assert await client.set_toggle(name, enabled) is True
+    client._mqtt.send.assert_awaited_once_with(base64.b64decode(captured))
+
+
+async def test_settings_write_their_config_fields():
+    from sharklocal import protobuf
+
+    client = _make_vacuum_client_with_mocks()
+    client._mqtt.send = AsyncMock(return_value=True)
+    await client.set_toggle("do_not_disturb", True)
+    await client.set_carpet_detect(2)
+    await client.set_volume(7)
+    sent = [call.args[0] for call in client._mqtt.send.await_args_list]
+    assert sent == [
+        protobuf.encode_bytes_field(7, protobuf.encode_varint_field(18, 1)),
+        protobuf.encode_bytes_field(7, protobuf.encode_varint_field(15, 2)),
+        protobuf.encode_bytes_field(7, protobuf.encode_varint_field(2, 7)),
+    ]
+
+
+async def test_unknown_toggle_is_refused():
+    client = _make_vacuum_client_with_mocks()
+    with pytest.raises(ValueError, match="turbo"):
+        await client.set_toggle("turbo", True)
+
+
+def test_mapping_carries_the_new_commands():
+    import base64
+
+    from sharklocal.mappings import load_mqtt_mapping
+
+    actions = load_mqtt_mapping("sharkiq_v1").actions
+    assert base64.b64decode(actions["pause"].payload) == bytes([0x80, 0x01, 8])  # 16 = USR_CTR_PAUSE
+    assert base64.b64decode(actions["start_cleaning"].payload) == bytes([0x80, 0x01, 9])  # USR_CTR_RESUME
+    assert base64.b64decode(actions["edge_clean"].payload) == bytes([0x80, 0x01, 16])  # USR_CTR_ALONG_WALL
+    assert base64.b64decode(actions["explore"].payload) == bytes([0x80, 0x01, 38])  # USR_CTR_AUTO_EXPLORE
+
+
+async def test_set_suction_rejects_unknown_level():
+    client = _make_vacuum_client_with_mocks()
+    with pytest.raises(ValueError):
+        await client.set_suction("turbo")
+
+
+# ---------------------------------------------------------------------------
+# clean_rooms() / clean_spot() — room definition, then start
+# ---------------------------------------------------------------------------
+
+
+def _persisted_map(persisted: bool = True) -> VacuumMap:
+    grid = MapGrid(resolution=0.06, width=1, height=1, origin=MapPoint(0.0, 0.0), cells=b"\x0f")
+    room = MapRoom(name="Kitchen", polygon=[MapPoint(0, 0), MapPoint(1, 0), MapPoint(1, 1), MapPoint(0, 1)])
+    return VacuumMap(grid=grid, persisted=persisted, map_id="ABCD1234", rooms=[room])
+
+
+async def test_clean_rooms_sends_selection_then_starts():
+    client = _make_vacuum_client_with_mocks()
+    client._mqtt.send = AsyncMock(return_value=True)
+    with patch.object(client, "_execute", new_callable=AsyncMock) as mock_exec:
+        mock_exec.return_value = True
+        result = await client.clean_rooms(["Kitchen"], vacuum_map=_persisted_map())
+    assert result is True
+    client._mqtt.send.assert_awaited_once()
+    payload = client._mqtt.send.await_args.args[0]
+    assert b"Kitchen" in payload and b"ABCD1234" in payload
+    mock_exec.assert_awaited_once_with("start_cleaning")
+
+
+async def test_clean_rooms_uses_last_map_from_monitoring():
+    client = _make_vacuum_client_with_mocks()
+    client._mqtt.send = AsyncMock(return_value=True)
+    client.last_map = _persisted_map()
+    with patch.object(client, "_execute", new_callable=AsyncMock) as mock_exec:
+        await client.clean_rooms(["Kitchen"], deep=True)
+    client._mqtt.send.assert_awaited_once()
+    mock_exec.assert_awaited_once_with("start_cleaning")
+
+
+async def test_clean_rooms_without_persisted_map_raises():
+    client = _make_vacuum_client_with_mocks()
+    with pytest.raises(SharklocalError, match="persisted map"):
+        await client.clean_rooms(["Kitchen"])
+
+
+async def test_clean_rooms_rejects_live_map():
+    client = _make_vacuum_client_with_mocks()
+    with pytest.raises(SharklocalError, match="persisted map"):
+        await client.clean_rooms(["Kitchen"], vacuum_map=_persisted_map(persisted=False))
+
+
+async def test_clean_rooms_unknown_room_propagates_value_error():
+    client = _make_vacuum_client_with_mocks()
+    with pytest.raises(ValueError, match="Unknown room"):
+        await client.clean_rooms(["Attic"], vacuum_map=_persisted_map())
+
+
+async def test_clean_spot_sends_pindrop_then_starts():
+    client = _make_vacuum_client_with_mocks()
+    client._mqtt.send = AsyncMock(return_value=True)
+    with patch.object(client, "_execute", new_callable=AsyncMock) as mock_exec:
+        mock_exec.return_value = True
+        result = await client.clean_spot(0.5, 0.5, vacuum_map=_persisted_map())
+    assert result is True
+    assert b"PinDrop" in client._mqtt.send.await_args.args[0]
+    mock_exec.assert_awaited_once_with("start_cleaning")
+
+
+async def test_clean_spot_without_map_raises():
+    client = _make_vacuum_client_with_mocks()
+    with pytest.raises(SharklocalError, match="persisted map"):
+        await client.clean_spot(0.0, 0.0)
+
+
+# ---------------------------------------------------------------------------
+# _send() — MQTT-only transport for runtime-built payloads
+# ---------------------------------------------------------------------------
+
+
+async def test_send_without_mqtt_raises_action_not_supported():
+    with patch("sharklocal.client.load_rest_mapping"), patch("sharklocal.client.RESTVacuumClient"):
+        client = VacuumClient("host", rest_mappings="test_rest_v1")
+    with pytest.raises(ActionNotSupportedError, match="MQTT"):
+        await client._send(b"\x00")
+
+
+async def test_send_uses_pinned_mqtt_client():
+    client = _make_vacuum_client_with_mocks()
+    client._mqtt.send = AsyncMock(return_value=True)
+    assert await client._send(b"\x01") is True
+    client._mqtt.send.assert_awaited_once_with(b"\x01")
+
+
+async def test_send_cascades_through_mqtt_candidates():
+    mqtt_a = _make_mqtt_client_mock()
+    mqtt_a.send = AsyncMock(side_effect=ConnectError("a down"))
+    mqtt_b = _make_mqtt_client_mock()
+    mqtt_b.send = AsyncMock(return_value=True)
+    with patch("sharklocal.client.load_mqtt_mapping"), \
+         patch("sharklocal.client.MQTTVacuumClient", side_effect=[mqtt_a, mqtt_b]):
+        client = VacuumClient("host", mqtt_mappings=["test_a", "test_b"])
+    assert await client._send(b"\x02") is True
+    mqtt_a.send.assert_awaited_once()
+    mqtt_b.send.assert_awaited_once()
+
+
+async def test_send_raises_last_connect_error_when_all_fail():
+    client = _make_vacuum_client_with_mocks()
+    client._mqtt.send = AsyncMock(side_effect=ConnectError("down"))
+    with pytest.raises(ConnectError, match="down"):
+        await client._send(b"\x03")
+
+
+# ---------------------------------------------------------------------------
+# _on_monitor_status() — caches status and persisted map, forwards to callback
+# ---------------------------------------------------------------------------
+
+
+async def test_on_monitor_status_forwards_to_sync_callback_and_caches():
+    client = _make_vacuum_client_with_mocks()
+    received: List[VacuumStatus] = []
+    client.on_status_update(received.append)
+    status = VacuumStatus(mode=VacuumMode.CLEANING, map=_persisted_map(persisted=False))
+    await client._on_monitor_status(status)
+    assert received == [status]
+    assert client.last_status is status
+    assert client.last_map is None  # live maps are not cached as the room definition
+
+
+async def test_on_monitor_status_forwards_to_async_callback_and_caches_persisted_map():
+    client = _make_vacuum_client_with_mocks()
+    received: List[VacuumStatus] = []
+
+    async def _cb(status: VacuumStatus) -> None:
+        received.append(status)
+
+    client.on_status_update(_cb)
+    persisted = _persisted_map()
+    await client._on_monitor_status(VacuumStatus(mode=VacuumMode.DOCKED, map=persisted))
+    await client._on_monitor_status(VacuumStatus(mode=VacuumMode.DOCKED))
+    assert len(received) == 2
+    assert client.last_map is persisted  # a later map-less status keeps it
+
+
+def _job_map(*, report: bool, job_started: int) -> VacuumMap:
+    vacuum_map = _persisted_map()
+    vacuum_map.report = report
+    vacuum_map.job_started = job_started
+    return vacuum_map
+
+
+async def test_requested_map_does_not_replace_the_report_of_the_same_job():
+    client = _make_vacuum_client_with_mocks()
+    client.on_status_update(lambda s: None)
+    report = _job_map(report=True, job_started=100)
+    await client._on_monitor_status(VacuumStatus(mode=VacuumMode.DOCKED, map=report))
+    await client._on_monitor_status(
+        VacuumStatus(mode=VacuumMode.DOCKED, map=_job_map(report=False, job_started=100))
+    )
+    assert client.last_map is report  # keeps the event log
+
+
+async def test_requested_map_of_a_newer_job_replaces_the_report():
+    client = _make_vacuum_client_with_mocks()
+    client.on_status_update(lambda s: None)
+    await client._on_monitor_status(
+        VacuumStatus(mode=VacuumMode.DOCKED, map=_job_map(report=True, job_started=100))
+    )
+    requested = _job_map(report=False, job_started=200)
+    await client._on_monitor_status(VacuumStatus(mode=VacuumMode.DOCKED, map=requested))
+    assert client.last_map is requested
+
+
+async def test_report_replaces_a_requested_map_of_the_same_job():
+    client = _make_vacuum_client_with_mocks()
+    client.on_status_update(lambda s: None)
+    await client._on_monitor_status(
+        VacuumStatus(mode=VacuumMode.DOCKED, map=_job_map(report=False, job_started=100))
+    )
+    report = _job_map(report=True, job_started=100)
+    await client._on_monitor_status(VacuumStatus(mode=VacuumMode.DOCKED, map=report))
+    assert client.last_map is report
+
+
+async def test_start_monitoring_wraps_callback():
+    client = _make_vacuum_client_with_mocks()
+    client._status_callback = lambda s: None
+    client._mqtt.monitor = AsyncMock()
+    await client.start_monitoring()
+    await asyncio.sleep(0)
+    assert client._mqtt.monitor.await_args.args[0] == client._on_monitor_status
+    await client.stop_monitoring()

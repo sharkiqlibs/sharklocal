@@ -105,6 +105,18 @@ async def test_make_connector_https_with_ssl_verify(rest_mapping):
     await connector.close()
 
 
+async def test_ssl_context_is_built_at_construction_not_in_the_event_loop(rest_mapping):
+    rest_mapping.transport = "https"
+    rest_mapping.verify_ssl = False
+    with patch("sharklocal.rest_client.ssl.create_default_context", wraps=ssl.create_default_context) as create:
+        client = RESTVacuumClient("host", rest_mapping)
+        assert create.call_count == 1
+        connector = client._make_connector()
+        assert create.call_count == 1
+    assert client._ssl_context.verify_mode == ssl.CERT_NONE
+    await connector.close()
+
+
 # ---------------------------------------------------------------------------
 # _get_session()
 # ---------------------------------------------------------------------------
@@ -202,6 +214,30 @@ async def test_call_connect_error_on_connector_error(rest_mapping):
                         connection_key=MagicMock(), os_error=OSError("refused")
                     )
                 ),
+                __aexit__=AsyncMock(return_value=False),
+            )
+        )
+        mock_get.return_value = session
+        with pytest.raises(ConnectError):
+            await client.call("get_status")
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        aiohttp.ConnectionTimeoutError("Connection timeout to host"),
+        aiohttp.ServerDisconnectedError(),
+        TimeoutError(),
+    ],
+    ids=["connection-timeout", "server-disconnected", "total-timeout"],
+)
+async def test_call_connect_error_on_unreachable_host(rest_mapping, error):
+    client = RESTVacuumClient("host", rest_mapping)
+    with patch.object(client, "_get_session") as mock_get:
+        session = AsyncMock()
+        session.request = MagicMock(
+            return_value=MagicMock(
+                __aenter__=AsyncMock(side_effect=error),
                 __aexit__=AsyncMock(return_value=False),
             )
         )

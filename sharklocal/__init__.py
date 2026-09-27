@@ -41,7 +41,21 @@ from .mappings import (
     load_mqtt_mapping,
     load_rest_mapping,
 )
-from .models import DeviceInfo, ProbeResult, VacuumEvent, VacuumMode, VacuumStatus
+from .models import (
+    DeviceInfo,
+    MapFeature,
+    MapGrid,
+    MapPoint,
+    MapPose,
+    MapRoom,
+    ProbeResult,
+    SuctionLevel,
+    VacuumEvent,
+    VacuumLogEntry,
+    VacuumMap,
+    VacuumMode,
+    VacuumStatus,
+)
 from .mqtt_client import MQTTVacuumClient, register_decoder
 from .rest_client import RESTVacuumClient
 
@@ -69,6 +83,15 @@ __all__ = [
     "VacuumEvent",
     "DeviceInfo",
     "ProbeResult",
+    "SuctionLevel",
+    # Map models
+    "VacuumMap",
+    "MapGrid",
+    "MapPoint",
+    "MapPose",
+    "MapRoom",
+    "MapFeature",
+    "VacuumLogEntry",
     # Exceptions
     "SharklocalError",
     "ConnectError",
